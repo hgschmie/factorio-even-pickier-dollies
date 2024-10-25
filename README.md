@@ -9,6 +9,8 @@ Hover over entities and use the keybindings to move entities around. Entities wi
 
 Note: Moving some modded entities that rely on position can cause issues. There is an API available that mod authors can use to be notified of these events.
 
+[![Even Pickier Dollies in Action](https://github.com/hgschmie/factorio-even-pickier-dollies/blob/main/.portal/even-pickier-dollies.gif)]
+
 ## Remote API
 
 This module retains the 'PickerDollies' API name to be compatible with all the other things out there that interface with it.
