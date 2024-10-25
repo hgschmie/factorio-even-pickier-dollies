@@ -9,9 +9,9 @@ local epd = {
     remote_interface = require('interface')(event_id)
 }
 
-remote.add_interface("picker-dollies", epd.remote_interface)
+remote.add_interface('PickerDollies', epd.remote_interface)
 
-assert(remote.interfaces['picker-dollies']['dolly_moved_entity_id'])
+assert(remote.interfaces['PickerDollies']['dolly_moved_entity_id'])
 
 --- @param t table
 --- @return table

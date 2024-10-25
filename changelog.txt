@@ -1,6 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.1
+Date: 2024-10-25
+  Changes:
+    - Fixed crash with remote interface (reported on the mod forum, thanks @wretlaw120)
+---------------------------------------------------------------------------------------------------
 Version: 2.0.0
-Date: ????
+Date: 2024-10-24
   Changes:
     - Forked from PickerDollies 1.2.6
     - applied Factorio 2.0 changes

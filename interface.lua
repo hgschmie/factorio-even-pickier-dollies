@@ -27,11 +27,11 @@
 --- @field start_pos MapPosition
 
 
-return function (epd)
+return function (event_id)
     return {
 
         dolly_moved_entity_id = function ()
-            return epd.event_id
+            return event_id
         end,
 
         --- @param entity_name string
