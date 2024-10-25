@@ -4,22 +4,19 @@
 
 local event_id = script.generate_event_name()
 
+--- @class EvenPickierDolliesMod
+--- @field event_id uint The event id registered with the main game.
+--- @field remote_interface EvenPickierDolliesRemoteInterface
 local epd = {
     event_id = event_id,
     remote_interface = require('interface')(event_id)
 }
 
-remote.add_interface('PickerDollies', epd.remote_interface)
+local api_name = 'PickerDollies'
 
-assert(remote.interfaces['PickerDollies']['dolly_moved_entity_id'])
+remote.add_interface(api_name, epd.remote_interface)
 
---- @param t table
---- @return table
-local function table_copy(t)
-    local t2 = {}
-    for k, v in pairs(t) do t2[k] = v end
-    return t2
-end
+assert(remote.interfaces[api_name]['dolly_moved_entity_id'])
 
 --- @generic K
 --- @param t {[uint]: K}
@@ -32,7 +29,6 @@ end
 
 --- Entity types that can not be moved even in cheat_mode.
 local blacklist_types = array_to_dict {
-
     -- rails and train stuff
     "straight-rail", "half-diagonal-rail", "curved-rail-a", "curved-rail-b", "legacy-straight-rail", "legacy-curved-rail",
     "elevated-curved-rail-a", "elevated-curved-rail-b", "elevated-half-diagonal-rail", "elevated-straight-rail",
@@ -110,7 +106,7 @@ end
 local function get_saved_entity(player, pdata, tick, save_time)
     if save_time == 0 then return player.selected end
 
-    if pdata.dolly and (not pdata.dolly.valid or tick > (pdata.dolly_tick + 60 * save_time)) then pdata.dolly = nil end
+    if pdata.dolly and (not pdata.dolly.valid or tick > (pdata.dolly_tick + second * save_time)) then pdata.dolly = nil end
 
     local selected = player.selected
     if selected then
@@ -160,27 +156,13 @@ local function pdata(index)
     return player_data
 end
 
-local vectors = {
-    [defines.direction.north]     = { x = 0, y = -1 },
-    [defines.direction.northeast] = { x = 1, y = -1 },
-    [defines.direction.east]      = { x = 1, y = 0 },
-    [defines.direction.southeast] = { x = 1, y = 1 },
-    [defines.direction.south]     = { x = 0, y = 1 },
-    [defines.direction.southwest] = { x = -1, y = 1 },
-    [defines.direction.west]      = { x = -1, y = 0 },
-    [defines.direction.northwest] = { x = -1, y = -1 },
-}
 local function direction_to_vector(direction, distance)
-    local offset = vectors[direction] or { x = 0, y = 0 }
-    return { x = offset.x * distance, y = offset.y * distance }
+    local vector = util.direction_vectors[direction] or { 0, 0 }
+    return { x = vector[1] * distance, y = vector[2] * distance }
 end
 
-local function direction_opposite(direction)
-    return (direction + 8) % 16
-end
-
-local function direction_next(direction, eight_way)
-    return (direction + (eight_way and 2 or 4)) % 16
+local function direction_next(direction)
+    return (direction + 4) % 16
 end
 
 local function position_add(pos1, pos2)
@@ -269,7 +251,7 @@ function epd:move_entity(event)
     local target_direction = event.target_direction or entity.direction
     local target_pos = position_translate(start_pos, direction, distance)        -- Where we want to go too
     local target_box = area_translate(entity.selection_box, direction, distance) -- Target selection box location
-    local out_of_the_way = position_translate(start_pos, direction_opposite(direction), event.tiles_away or 20)
+    local out_of_the_way = position_translate(start_pos, util.oppositedirection(direction), event.tiles_away or 20)
     local final_teleportation = false                                            -- Handling teleportion after an entity has been moved into place and checked again
 
     ---  Try retries times to teleport the entity out of the way.
@@ -426,15 +408,15 @@ script.on_event({ "dolly-rotate-saved", "dolly-rotate-saved-reverse" },
     function (event_data) epd:rotate_saved_dolly(event_data) end)
 
 local function on_init()
-    storage.blacklist_names = table_copy(blacklist_names)
-    storage.oblong_names = table_copy(oblong_names)
+    storage.blacklist_names = util.copy(blacklist_names)
+    storage.oblong_names = util.copy(oblong_names)
 end
 script.on_init(on_init)
 
 local function on_configuration_changed()
     --- Make sure the blacklists exist.
-    storage.blacklist_names = storage.blacklist_names or table_copy(blacklist_names)
-    storage.oblong_names = storage.oblong_names or table_copy(oblong_names)
+    storage.blacklist_names = storage.blacklist_names or util.copy(blacklist_names)
+    storage.oblong_names = storage.oblong_names or util.copy(oblong_names)
 
     --- Remove any invalid prototypes from the blacklists.
     for name in pairs(storage.blacklist_names) do

@@ -21,15 +21,13 @@
 --- end)
 --- ```
 --- If you are using the remote interface for adding/removing entity names make sure to add PickerDollies as an optional dependency.
---- @class EventData.PickerDollies.dolly_moved_event: EventData
---- @field player_index uint
---- @field moved_entity LuaEntity
---- @field start_pos MapPosition
 
-
+--- @param event_id uint
+--- @return EvenPickierDolliesRemoteInterface
 return function (event_id)
     return {
 
+        --- @return uint event_id The event id to use when registering for dollies events.
         dolly_moved_entity_id = function ()
             return event_id
         end,
