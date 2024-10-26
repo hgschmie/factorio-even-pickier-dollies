@@ -18,7 +18,7 @@ return {
     tile_offset = 20,
     -- number of retries when teleporting entities around.
     teleport_retries = 5,
-    -- extension area in which to repair connections for loaders, beacons, cliffs and mining drills. 
+    -- extension area in which to repair connections for loaders, beacons, cliffs and mining drills.
     grid_size = 32,
 
     --- Entity types that can not be moved even in cheat_mode.

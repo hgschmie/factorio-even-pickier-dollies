@@ -89,6 +89,36 @@ function tools.get_save_entity_setting(player)
     return player.mod_settings["dolly-save-entity"].value --[[@as uint]]
 end
 
+--- @param entity LuaEntity
+--- @param position MapPosition
+function tools.safe_teleport(entity, position)
+
+    -- this is a workaround for https://forums.factorio.com/viewtopic.php?f=7&t=117719
+    -- my suspicion is that this is a bug with the new fluid system; there is nothing in the
+    -- release notes that teleporting (moving) an entity with a fluid box would clear it.
+
+    local fluids = {}
+
+    if #entity.fluidbox > 0 then
+        for i = 1, #entity.fluidbox, 1 do
+            local fluid = entity.get_fluid(i)
+            table.insert(fluids, fluid)
+        end
+    end
+
+    if not entity.teleport(position) then return false end
+
+    if #fluids then
+        for i = 1, #fluids, 1 do
+            if fluids[i] then
+                entity.set_fluid(i, fluids[i])
+            end
+        end
+    end
+
+    return true
+end
+
 -- ----------------------
 -- stdlib stuff
 -- ----------------------

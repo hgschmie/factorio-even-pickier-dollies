@@ -30,14 +30,20 @@ function epd:move_entity(move_event)
     if not direction then return end
 
     -- Check non cheat_mode player in range.
-    if not (cheat_mode or player.can_reach_entity(entity)) then return tools.flying_text(player, { "cant-reach" }, entity.position) end
+    if not (cheat_mode or player.can_reach_entity(entity)) then
+        return tools.flying_text(player, { "cant-reach" }, entity.position)
+    end
 
     -- Check if entity is blacklisted, cheat_mode allows moving more entities.
-    if not tools.allow_moving(entity, cheat_mode) then return tools.flying_text(player, { "picker-dollies.cant-be-teleported", entity.localised_name }, entity.position) end
+    if not tools.allow_moving(entity, cheat_mode) then
+        return tools.flying_text(player, { "picker-dollies.cant-be-teleported", entity.localised_name }, entity.position)
+    end
 
     -- Only move entities of the same force unless cheat_mode is enabled.
     local entity_force = entity.force --[[@as LuaForce]]
-    if not (cheat_mode or entity_force == player.force) then return tools.flying_text(player, { "picker-dollies.wrong-force", entity.localised_name }, entity.position) end
+    if not (cheat_mode or entity_force == player.force) then
+        return tools.flying_text(player, { "picker-dollies.wrong-force", entity.localised_name }, entity.position)
+    end
 
     local surface = entity.surface
     local start_pos = entity.position        -- Where we started from in case we have to return it
@@ -45,7 +51,9 @@ function epd:move_entity(move_event)
 
     -- Make sure there is not a rocket present.
     -- @todo Move the rocket-silo-rocket to the correct spot.
-    if surface.find_entity("rocket-silo-rocket", start_pos) then return tools.flying_text(player, { "picker-dollies.rocket-present", entity.localised_name }, start_pos) end
+    if surface.find_entity("rocket-silo-rocket", start_pos) then
+        return tools.flying_text(player, { "picker-dollies.rocket-present", entity.localised_name }, start_pos)
+    end
 
     local prototype = entity.prototype
 
@@ -57,7 +65,7 @@ function epd:move_entity(move_event)
 
     --  Try retries times to teleport the entity out of the way.
     local retries = const.teleport_retries
-    while not entity.teleport(out_of_the_way) do
+    while not tools.safe_teleport(entity, out_of_the_way) do
         if retries <= 1 then return tools.flying_text(player, { "picker-dollies.cant-be-teleported", entity.localised_name }, entity.position) end
         retries = retries - 1
         out_of_the_way = tools.position_add(out_of_the_way, { x = retries, y = retries })
@@ -78,10 +86,8 @@ function epd:move_entity(move_event)
 
         -- Final teleport into position. Ignore final_teleportation if we are not raising
         if not (raise and final_teleportation) then
-            if final_direction then
-                entity.direction = final_direction
-            end
-            entity.teleport(final_pos)
+            if final_direction then entity.direction = final_direction end
+            tools.safe_teleport(entity, final_pos)
         end
 
         if not raise then return tools.flying_text(player, reason, final_pos) end
@@ -96,7 +102,7 @@ function epd:move_entity(move_event)
                 -- @todo this doesn't do anything.......
                 local item_pos = item_entity.position
                 -- local valid_pos = surface.find_non_colliding_position("item-on-ground", item_pos, 0, .20) or item_pos
-                item_entity.teleport(item_pos)
+                tools.safe_teleport(item_entity, item_pos)
             end
         end
 
@@ -142,7 +148,7 @@ function epd:move_entity(move_event)
     --  Check if all the wires can reach.
     local wire_connectors = entity.get_wire_connectors(false) or {}
     if table_size(wire_connectors) > 0 then
-        if not final_teleportation then entity.teleport(target_pos) end
+        if not final_teleportation then tools.safe_teleport(entity, target_pos) end
         final_teleportation = true
         if not tools.can_wires_reach(entity) then return teleport_and_update(start_pos, start_direction, false, { "picker-dollies.wires-maxed" }) end
     end
