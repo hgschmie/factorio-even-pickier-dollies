@@ -36,7 +36,7 @@ return {
     },
 
     --- Entity types that can only be moved in cheat_mode.
-    blacklist_cheat_types = array_to_dict { "character", "unit", "unit-spawner", "car", "spider-vehicle", "simple-entity", "corpse", "character-corpse" },
+    whitelist_cheat_types = array_to_dict { "character", "unit", "unit-spawner", "car", "spider-vehicle", "simple-entity", "corpse", "character-corpse" },
 
     --- Default entity names to blacklist from moving. Stored in global and can be modified by the user via interface.
     blacklist_names = array_to_dict { "pumpjack" },

@@ -25,12 +25,12 @@
 --- control.lua
 ----------------------------------------------------------------------------------------------------
 
---- @class PickerDollies.storage
---- @field players {[uint]: PickerDollies.pdata}
+--- @class EvenPickierDolliesStorage
+--- @field players {[uint]: EvenPickierDolliesPlayerData}
 --- @field blacklist_names {[string]: true}
 --- @field oblong_names {[string]: true}
 
---- @class PickerDollies.pdata
+--- @class EvenPickierDolliesPlayerData
 --- @field dolly_tick uint
 --- @field dolly LuaEntity?
 
