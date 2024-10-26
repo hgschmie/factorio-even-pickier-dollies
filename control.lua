@@ -2,6 +2,9 @@
 -- runtime code
 --
 
+local util = require('util')
+local const = require ('scripts.constants')
+
 local event_id = script.generate_event_name()
 
 --- @class EvenPickierDolliesMod
@@ -9,67 +12,12 @@ local event_id = script.generate_event_name()
 --- @field remote_interface EvenPickierDolliesRemoteInterface
 local epd = {
     event_id = event_id,
-    remote_interface = require('interface')(event_id)
+    remote_interface = require('scripts.remote-interface')(event_id)
 }
 
-local api_name = 'PickerDollies'
+remote.add_interface(const.api_name, epd.remote_interface)
 
-remote.add_interface(api_name, epd.remote_interface)
-
-assert(remote.interfaces[api_name]['dolly_moved_entity_id'])
-
---- @generic K
---- @param t {[uint]: K}
---- @return {[K]: true}
-local function array_to_dict(t)
-    local t2 = {}
-    for _, v in pairs(t) do t2[v] = true end
-    return t2
-end
-
---- Entity types that can not be moved even in cheat_mode.
-local blacklist_types = array_to_dict {
-    -- rails and train stuff
-    "straight-rail", "half-diagonal-rail", "curved-rail-a", "curved-rail-b", "legacy-straight-rail", "legacy-curved-rail",
-    "elevated-curved-rail-a", "elevated-curved-rail-b", "elevated-half-diagonal-rail", "elevated-straight-rail",
-    "rail-ramp", "rail-support", "train-stop", "rail-signal", "rail-chain-signal", "rail-remnants",
-    "locomotive", "cargo-wagon", "artillery-wagon", "fluid-wagon",
-    -- robots
-    "construction-robot", "logistic-robot", "combat-robot",
-    -- rockets and space stuff
-    "rocket-silo-rocket", "rocket-silo-rocket-shadow", "cargo-landing-pad", "cargo-pod",
-    -- belts and containers
-    "linked-belt", "underground-belt", "temporary-container",
-    -- environment
-    "cliff", "tree", "resource", "explosion", "particle-source", "fire", "sticker", "stream", "beam", "artillery-flare", "projectile",
-    -- internal stuff
-    "item-request-proxy", "tile-ghost", "item-entity", "deconstructible-tile-proxy", "arrow", "highlight-box", "entity-ghost", "speech-bubble", "smoke-with-trigger",
-    -- misc
-    "spider-leg",
-}
-
---- Entity types that can only be moved in cheat_mode.
-local blacklist_cheat_types = array_to_dict { "character", "unit", "unit-spawner", "car", "spider-vehicle", "simple-entity", "corpse", "character-corpse" }
-
---- Default entity names to blacklist from moving. Stored in global and can be modified by the user via interface.
-local blacklist_names = array_to_dict { "pumpjack" }
-
---- Default entity names with none-square bounding boxes. Stored in global and can be modified by the user via interface.
-local oblong_names = array_to_dict { "pump", "arithmetic-combinator", "decider-combinator", "selector-combinator", }
-
-local input_to_direction = {
-    ["dolly-move-north"] = defines.direction.north,
-    ["dolly-move-east"]  = defines.direction.east,
-    ["dolly-move-south"] = defines.direction.south,
-    ["dolly-move-west"]  = defines.direction.west
-}
-
-local oblong_diags = {
-    [defines.direction.north] = defines.direction.northeast,
-    [defines.direction.south] = defines.direction.northeast,
-    [defines.direction.west]  = defines.direction.southwest,
-    [defines.direction.east]  = defines.direction.southwest
-}
+assert(remote.interfaces[const.api_name]['dolly_moved_entity_id'])
 
 --- @param player LuaPlayer
 --- @param position MapPosition
@@ -83,9 +31,9 @@ end
 --- @param cheat_mode? boolean
 --- @return boolean
 local function is_blacklisted(entity, cheat_mode)
-    local listed = blacklist_types[entity.type] or storage.blacklist_names[entity.name]
+    local listed = const.blacklist_types[entity.type] or storage.blacklist_names[entity.name]
     if cheat_mode then return listed end
-    return listed or blacklist_cheat_types[entity.type]
+    return listed or const.blacklist_cheat_types[entity.type]
 end
 
 --- @param pdata PickerDollies.pdata
@@ -110,7 +58,7 @@ local function get_saved_entity(player, pdata, tick, save_time)
 
     local selected = player.selected
     if selected then
-        if pdata.dolly and blacklist_types[selected.type] then
+        if pdata.dolly and const.blacklist_types[selected.type] then
             return pdata.dolly
         end
         return selected
@@ -204,7 +152,7 @@ local function area_expand(area, amount)
 end
 
 
---- @param event EventData.CustomInputEvent
+--- @param event EventData.PickerDollies.CustomInputEvent
 function epd:move_entity(event)
     --- @type LuaPlayer?, PickerDollies.pdata
     local player, pdata = game.get_player(event.player_index), pdata(event.player_index)
@@ -244,7 +192,7 @@ function epd:move_entity(event)
     end
 
     local prototype = entity.prototype
-    local direction = event.direction or input_to_direction[event.input_name] -- Direction to move the source
+    local direction = event.direction or const.input_to_direction[event.input_name] -- Direction to move the source
     if not direction then return end
 
     local distance = (event.distance or 1) * prototype.building_grid_bit_shift   -- Distance to move the source, defaults to 1
@@ -360,10 +308,10 @@ function epd:move_entity(event)
 end
 
 script.on_event({ "dolly-move-north", "dolly-move-east", "dolly-move-south", "dolly-move-west" }, function (event_data)
-    epd:move_entity(event_data)
+    epd:move_entity(event_data) --[[@as EventData.PickerDollies.CustomInputEvent]]
 end)
 
---- @param event EventData.CustomInputEvent
+--- @param event EventData.PickerDollies.CustomInputEvent
 function epd:try_rotate_oblong_entity(event)
     --- @type LuaPlayer?, PickerDollies.pdata
     local player, pdata = game.get_player(event.player_index), pdata(event.player_index)
@@ -383,7 +331,7 @@ function epd:try_rotate_oblong_entity(event)
         .direction -- store the direction for later failed teleportation will need to restore it.
     event.target_direction = direction_next(entity.direction)
     event.distance = .5
-    event.direction = oblong_diags[event.target_direction] -- Set the translation direction to a diagonal.
+    event.direction = const.oblong_diags[event.target_direction] -- Set the translation direction to a diagonal.
     self:move_entity(event)
 end
 
@@ -408,15 +356,15 @@ script.on_event({ "dolly-rotate-saved", "dolly-rotate-saved-reverse" },
     function (event_data) epd:rotate_saved_dolly(event_data) end)
 
 local function on_init()
-    storage.blacklist_names = util.copy(blacklist_names)
-    storage.oblong_names = util.copy(oblong_names)
+    storage.blacklist_names = util.copy(const.blacklist_names)
+    storage.oblong_names = util.copy(const.oblong_names)
 end
 script.on_init(on_init)
 
 local function on_configuration_changed()
     --- Make sure the blacklists exist.
-    storage.blacklist_names = storage.blacklist_names or util.copy(blacklist_names)
-    storage.oblong_names = storage.oblong_names or util.copy(oblong_names)
+    storage.blacklist_names = storage.blacklist_names or util.copy(const.blacklist_names)
+    storage.oblong_names = storage.oblong_names or util.copy(const.oblong_names)
 
     --- Remove any invalid prototypes from the blacklists.
     for name in pairs(storage.blacklist_names) do
@@ -428,21 +376,3 @@ local function on_configuration_changed()
 end
 
 script.on_configuration_changed(on_configuration_changed)
-
---- @class PickerDollies.global
---- @field players {[uint]: PickerDollies.pdata}
---- @field blacklist_names {[string]: true}
---- @field oblong_names {[string]: true}
-
---- @class PickerDollies.pdata
---- @field dolly_tick uint
---- @field dolly LuaEntity?
-
---- @class EventData.PickerDollies.CustomInputEvent: EventData.CustomInputEvent
---- @field direction defines.direction
---- @field distance number
---- @field tiles_away uint
---- @field start_pos MapPosition
---- @field start_direction? defines.direction
---- @field target_direction? defines.direction
---- @field save_time? uint
