@@ -180,7 +180,8 @@ function epd.dolly_move(event)
 end
 
 --- @param event EventData.CustomInputEvent
-function epd.rotate_oblong_entity(event)
+--- @param reverse boolean
+function epd.rotate_oblong_entity(event, reverse)
     --- @type LuaPlayer?, EvenPickierDolliesPlayerData
     local player, pdata = game.get_player(event.player_index), tools.pdata(event.player_index)
     if not player then return end
@@ -194,7 +195,7 @@ function epd.rotate_oblong_entity(event)
     if not (storage.oblong_names[entity.name] and tools.allow_moving(entity, player.cheat_mode)) then return end
     if not (player.cheat_mode or player.can_reach_entity(entity)) then return end
 
-    local rotate = tools.direction_next(entity.direction)
+    local rotate = reverse and tools.direction_previous(entity.direction) or tools.direction_next(entity.direction)
 
     --- @type EvenPickierDolliesMoveEvent
     local move_event = {
@@ -248,7 +249,8 @@ function epd.on_configuration_changed()
 end
 
 script.on_event({ "dolly-move-north", "dolly-move-east", "dolly-move-south", "dolly-move-west" }, epd.dolly_move)
-script.on_event("dolly-rotate-rectangle", epd.rotate_oblong_entity)
+script.on_event("dolly-rotate-rectangle", function(event) epd.rotate_oblong_entity(event, false) end)
+script.on_event("dolly-rotate-rectangle-reverse", function(event) epd.rotate_oblong_entity(event, true) end)
 script.on_event("dolly-rotate-saved", function (event) epd.rotate_saved_dolly(event, false) end)
 script.on_event("dolly-rotate-saved-reverse", function (event) epd.rotate_saved_dolly(event, true) end)
 script.on_init(epd.on_init)

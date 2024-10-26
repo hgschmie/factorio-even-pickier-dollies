@@ -137,6 +137,12 @@ function tools.direction_next(direction)
     return (direction + 4) % 16
 end
 
+--- @param direction defines.direction
+--- @return defines.direction new_direction
+function tools.direction_previous(direction)
+    return (direction - 4) % 16
+end
+
 --- @param pos1 MapPosition
 --- @param pos2 MapPosition
 --- @return MapPosition

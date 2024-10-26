@@ -5,6 +5,7 @@ Date: ????
     - Refactor the code to be more modular, rework the rotate / move logic
     - Fix issue where contents disappear from a moved storage tank. This smells like a bug in the
       game itself (see https://forums.factorio.com/viewtopic.php?f=7&t=117719)
+    - add reverse oblong rotation
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.1
 Date: 2024-10-25

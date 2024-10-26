@@ -35,6 +35,12 @@ data:extend {
         key_sequence = "KP_0",
         hidden_in_factoriopedia = true,
     },
+    {
+        type = "custom-input",
+        name = "dolly-rotate-rectangle-reverse",
+        key_sequence = "SHIFT + KP_0",
+        hidden_in_factoriopedia = true,
+    },
     -- attach to existing rotate key
     {
         type = "custom-input",
