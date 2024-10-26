@@ -4,6 +4,7 @@
 
 local const = require ('scripts.constants')
 
+--- @class EvenPickierDolliesTools
 local tools = {}
 
 --- @param player LuaPlayer
@@ -42,7 +43,6 @@ end
 --- @param tick uint
 --- @param save_time uint
 function tools.save_entity(pdata, entity, tick, save_time)
-    if save_time == 0 then return end
     pdata.dolly = entity
     pdata.dolly_tick = tick
 end
@@ -52,18 +52,22 @@ end
 --- @param tick uint
 --- @param save_time uint
 --- @return LuaEntity|nil
-function tools.get_saved_entity(player, pdata, tick, save_time)
+function tools.get_entity_to_move(player, pdata, tick, save_time)
+    -- do not remember the last moved entity. Return either the current selection or nil.
     if save_time == 0 then return player.selected end
 
+    -- clean out current entity if it is invalid or expired
     if pdata.dolly and (not pdata.dolly.valid or tick > (pdata.dolly_tick + second * save_time)) then pdata.dolly = nil end
 
-    if player.selected then
-        if pdata.dolly and not tools.allow_moving(player.selected, player.cheat_mode) then
-            return pdata.dolly
-        end
+    -- if the player has not selected anything, return the current entity or nil
+    if not player.selected then return pdata.dolly end
+
+    -- if the selected object can not be moved and there is a current object, return that, otherwise the selected object
+    if pdata.dolly and not tools.allow_moving(player.selected, player.cheat_mode) then
+        return pdata.dolly
+    else
         return player.selected
     end
-    return pdata.dolly
 end
 
 --- Returns true if the wires can reach.
@@ -77,6 +81,12 @@ function tools.can_wires_reach(entity)
         end
     end
     return true
+end
+
+--- @param player LuaPlayer
+--- @return uint dolly_save_entity
+function tools.get_save_entity_setting(player)
+    return player.mod_settings["dolly-save-entity"].value --[[@as uint]]
 end
 
 -- ----------------------

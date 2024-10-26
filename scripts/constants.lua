@@ -14,6 +14,13 @@ end
 return {
     api_name = 'PickerDollies',
 
+    -- offset for temporary teleport. Default is 20 tiles.
+    tile_offset = 20,
+    -- number of retries when teleporting entities around.
+    teleport_retries = 5,
+    -- extension area in which to repair connections for loaders, beacons, cliffs and mining drills. 
+    grid_size = 32,
+
     --- Entity types that can not be moved even in cheat_mode.
     blacklist_types = array_to_dict {
         -- rails and train stuff

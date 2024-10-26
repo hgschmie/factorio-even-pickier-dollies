@@ -7,7 +7,7 @@
 --- interface.lua
 ----------------------------------------------------------------------------------------------------
 
---- @class EventData.PickerDollies.dolly_moved_event: EventData
+--- @class EvenPickierDolliesRemoteInterfaceDollyMovedEvent: EventData
 --- @field player_index uint
 --- @field moved_entity LuaEntity
 --- @field start_pos MapPosition
@@ -34,11 +34,12 @@
 --- @field dolly_tick uint
 --- @field dolly LuaEntity?
 
---- @class EventData.PickerDollies.CustomInputEvent: EventData.CustomInputEvent
+--- @class EvenPickierDolliesMoveEvent
+--- @field player LuaPlayer
+--- @field pdata EvenPickierDolliesPlayerData
+--- @field tick integer,
+--- @field entity LuaEntity
+--- @field save_time uint,
 --- @field direction defines.direction
+--- @field rotate? defines.direction
 --- @field distance number
---- @field tiles_away uint
---- @field start_pos MapPosition
---- @field start_direction? defines.direction
---- @field target_direction? defines.direction
---- @field save_time? uint
