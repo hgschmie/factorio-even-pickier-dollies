@@ -101,7 +101,7 @@ function tools.safe_teleport(entity, position)
 
     if #entity.fluidbox > 0 then
         for i = 1, #entity.fluidbox, 1 do
-            local fluid = entity.get_fluid(i)
+            local fluid = entity.fluidbox[i]
             table.insert(fluids, fluid)
         end
     end
