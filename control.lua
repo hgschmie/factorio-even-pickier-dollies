@@ -65,7 +65,7 @@ function epd:move_entity(move_event)
 
     --  Try retries times to teleport the entity out of the way.
     local retries = const.teleport_retries
-    while not tools.safe_teleport(entity, out_of_the_way) do
+    while not entity.teleport(out_of_the_way) do
         if retries <= 1 then return tools.flying_text(player, { "picker-dollies.cant-be-teleported", entity.localised_name }, entity.position) end
         retries = retries - 1
         out_of_the_way = tools.position_add(out_of_the_way, { x = retries, y = retries })
@@ -87,7 +87,7 @@ function epd:move_entity(move_event)
         -- Final teleport into position. Ignore final_teleportation if we are not raising
         if not (raise and final_teleportation) then
             if final_direction then entity.direction = final_direction end
-            tools.safe_teleport(entity, final_pos)
+            entity.teleport(final_pos)
         end
 
         if not raise then return tools.flying_text(player, reason, final_pos) end
@@ -102,7 +102,7 @@ function epd:move_entity(move_event)
                 -- @todo this doesn't do anything.......
                 local item_pos = item_entity.position
                 -- local valid_pos = surface.find_non_colliding_position("item-on-ground", item_pos, 0, .20) or item_pos
-                tools.safe_teleport(item_entity, item_pos)
+                item_entity.teleport(item_pos)
             end
         end
 
@@ -148,7 +148,7 @@ function epd:move_entity(move_event)
     --  Check if all the wires can reach.
     local wire_connectors = entity.get_wire_connectors(false) or {}
     if table_size(wire_connectors) > 0 then
-        if not final_teleportation then tools.safe_teleport(entity, target_pos) end
+        if not final_teleportation then entity.teleport(target_pos) end
         final_teleportation = true
         if not tools.can_wires_reach(entity) then return teleport_and_update(start_pos, start_direction, false, { "picker-dollies.wires-maxed" }) end
     end
