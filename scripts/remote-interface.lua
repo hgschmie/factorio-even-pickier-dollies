@@ -22,18 +22,18 @@
 --- ```
 --- If you are using the remote interface for adding/removing entity names make sure to add PickerDollies as an optional dependency.
 
---- @param event_id uint
---- @return EvenPickierDolliesRemoteInterface
+---@param event_id uint
+---@return EvenPickierDolliesRemoteInterface
 return function (event_id)
     return {
 
-        --- @return uint event_id The event id to use when registering for dollies events.
+        ---@return uint event_id The event id to use when registering for dollies events.
         dolly_moved_entity_id = function ()
             return event_id
         end,
 
-        --- @param entity_name string
-        --- @return boolean
+        ---@param entity_name string
+        ---@return boolean
         add_oblong_name = function (entity_name)
             storage.oblong_names = storage.oblong_names or {}
             local proto = prototypes.entity[entity_name]
@@ -43,8 +43,8 @@ return function (event_id)
             return true
         end,
 
-        --- @param entity_name string
-        --- @return boolean
+        ---@param entity_name string
+        ---@return boolean
         remove_oblong_name = function (entity_name)
             storage.oblong_names = storage.oblong_names or {}
             if not storage.oblong_names[entity_name] then return false end
@@ -53,14 +53,14 @@ return function (event_id)
             return true
         end,
 
-        --- @return {[string]: true}
+        ---@return {[string]: true}
         get_oblong_names = function ()
             storage.oblong_names = storage.oblong_names or {}
             return storage.oblong_names
         end,
 
-        --- @param entity_name string
-        --- @return boolean
+        ---@param entity_name string
+        ---@return boolean
         add_blacklist_name = function (entity_name)
             storage.blacklist_names = storage.blacklist_names or {}
             local proto = prototypes.entity[entity_name]
@@ -70,8 +70,8 @@ return function (event_id)
             return true
         end,
 
-        --- @param entity_name string
-        --- @return boolean
+        ---@param entity_name string
+        ---@return boolean
         remove_blacklist_name = function (entity_name)
             storage.blacklist_names = storage.blacklist_names or {}
             if not storage.blacklist_names[entity_name] then return false end
@@ -80,7 +80,7 @@ return function (event_id)
             return true
         end,
 
-        --- @return {[string]: true}
+        ---@return {[string]: true}
         get_blacklist_names = function ()
             storage.blacklist_names = storage.blacklist_names or {}
             return storage.blacklist_names

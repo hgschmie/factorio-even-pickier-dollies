@@ -8,9 +8,9 @@ local const = require('scripts.constants')
 
 local event_id = script.generate_event_name()
 
---- @class EvenPickierDolliesMod
---- @field event_id uint The event id registered with the main game.
---- @field remote_interface EvenPickierDolliesRemoteInterface
+---@class EvenPickierDolliesMod
+---@field event_id uint The event id registered with the main game.
+---@field remote_interface EvenPickierDolliesRemoteInterface
 local epd = {
     event_id = event_id,
     remote_interface = require('scripts.remote-interface')(event_id)
@@ -20,7 +20,7 @@ remote.add_interface(const.api_name, epd.remote_interface)
 
 assert(remote.interfaces[const.api_name]['dolly_moved_entity_id'])
 
---- @param move_event EvenPickierDolliesMoveEvent
+---@param move_event EvenPickierDolliesMoveEvent
 function epd:move_entity(move_event)
     local player = move_event.player
     local entity = move_event.entity
@@ -77,10 +77,10 @@ function epd:move_entity(move_event)
     tools.save_entity(move_event.pdata, entity, move_event.tick, move_event.save_time)
 
     -- Update everything after teleporting. This includes moving rocket-silo-rocket, item-entity, item-request-proxies, fluidbox.
-    --- @param final_pos MapPosition position to move to
-    --- @param final_direction defines.direction direction to point to
-    --- @param raise boolean Teleportation was successfull raise event
-    --- @param reason? LocalisedString
+    ---@param final_pos MapPosition position to move to
+    ---@param final_direction defines.direction direction to point to
+    ---@param raise boolean Teleportation was successfull raise event
+    ---@param reason? LocalisedString
     local function teleport_and_update(final_pos, final_direction, raise, reason)
         if entity.last_user then entity.last_user = player end
 
@@ -117,7 +117,7 @@ function epd:move_entity(move_event)
         local updateable_entities = surface.find_entities_filtered { area = tools.area_expand(target_box, const.grid_size), force = entity_force }
         for _, updateable in pairs(updateable_entities) do updateable.update_connections() end
 
-        --- @type EvenPickierDolliesRemoteInterfaceDollyMovedEvent
+        ---@type EvenPickierDolliesRemoteInterfaceDollyMovedEvent
         local event_data = {
             player_index = player.index,
             moved_entity = entity,
@@ -156,7 +156,7 @@ function epd:move_entity(move_event)
     return teleport_and_update(target_pos, move_event.rotate, true)
 end
 
---- @param event EventData.CustomInputEvent
+---@param event EventData.CustomInputEvent
 function epd.dolly_move(event)
     local player, pdata = game.get_player(event.player_index), tools.pdata(event.player_index)
     if not player then return end
@@ -165,7 +165,7 @@ function epd.dolly_move(event)
     local entity = tools.get_entity_to_move(player, pdata, event.tick, save_time)
     if not entity then return end
 
-    --- @type EvenPickierDolliesMoveEvent
+    ---@type EvenPickierDolliesMoveEvent
     local move_event = {
         player = player,
         pdata = pdata,
@@ -179,10 +179,10 @@ function epd.dolly_move(event)
     epd:move_entity(move_event)
 end
 
---- @param event EventData.CustomInputEvent
---- @param reverse boolean
+---@param event EventData.CustomInputEvent
+---@param reverse boolean
 function epd.rotate_oblong_entity(event, reverse)
-    --- @type LuaPlayer?, EvenPickierDolliesPlayerData
+    ---@type LuaPlayer?, EvenPickierDolliesPlayerData
     local player, pdata = game.get_player(event.player_index), tools.pdata(event.player_index)
     if not player then return end
 
@@ -197,7 +197,7 @@ function epd.rotate_oblong_entity(event, reverse)
 
     local rotate = reverse and tools.direction_previous(entity.direction) or tools.direction_next(entity.direction)
 
-    --- @type EvenPickierDolliesMoveEvent
+    ---@type EvenPickierDolliesMoveEvent
     local move_event = {
         player = player,
         pdata = pdata,
@@ -212,10 +212,10 @@ function epd.rotate_oblong_entity(event, reverse)
     epd:move_entity(move_event)
 end
 
---- @param event EventData.CustomInputEvent
---- @param reverse boolean
+---@param event EventData.CustomInputEvent
+---@param reverse boolean
 function epd.rotate_saved_dolly(event, reverse)
-    --- @type LuaPlayer?, EvenPickierDolliesPlayerData
+    ---@type LuaPlayer?, EvenPickierDolliesPlayerData
     local player, pdata = game.get_player(event.player_index), tools.pdata(event.player_index)
     if not player then return end
 

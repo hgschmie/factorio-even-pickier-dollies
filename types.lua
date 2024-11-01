@@ -7,39 +7,39 @@
 --- interface.lua
 ----------------------------------------------------------------------------------------------------
 
---- @class EvenPickierDolliesRemoteInterfaceDollyMovedEvent: EventData
---- @field player_index uint
---- @field moved_entity LuaEntity
---- @field start_pos MapPosition
+---@class EvenPickierDolliesRemoteInterfaceDollyMovedEvent: EventData
+---@field player_index uint
+---@field moved_entity LuaEntity
+---@field start_pos MapPosition
 
---- @class EvenPickierDolliesRemoteInterface
---- @field dolly_moved_entity_id fun(): uint
---- @field add_oblong_name fun(entity_name: string): boolean
---- @field remove_oblong_name fun(entity_name: string): boolean
---- @field get_oblong_names fun(): {[string]: true}
---- @field add_blacklist_name fun(entity_name: string): boolean
---- @field remove_blacklist_name fun(entity_name: string): boolean
---- @field get_blacklist_names fun(): {[string]: true}
+---@class EvenPickierDolliesRemoteInterface
+---@field dolly_moved_entity_id fun(): uint
+---@field add_oblong_name fun(entity_name: string): boolean
+---@field remove_oblong_name fun(entity_name: string): boolean
+---@field get_oblong_names fun(): {[string]: true}
+---@field add_blacklist_name fun(entity_name: string): boolean
+---@field remove_blacklist_name fun(entity_name: string): boolean
+---@field get_blacklist_names fun(): {[string]: true}
 
 ----------------------------------------------------------------------------------------------------
 --- control.lua
 ----------------------------------------------------------------------------------------------------
 
---- @class EvenPickierDolliesStorage
---- @field players {[uint]: EvenPickierDolliesPlayerData}
---- @field blacklist_names {[string]: true}
---- @field oblong_names {[string]: true}
+---@class EvenPickierDolliesStorage
+---@field players {[uint]: EvenPickierDolliesPlayerData}
+---@field blacklist_names {[string]: true}
+---@field oblong_names {[string]: true}
 
---- @class EvenPickierDolliesPlayerData
---- @field dolly_tick uint
---- @field dolly LuaEntity?
+---@class EvenPickierDolliesPlayerData
+---@field dolly_tick uint
+---@field dolly LuaEntity?
 
---- @class EvenPickierDolliesMoveEvent
---- @field player LuaPlayer
---- @field pdata EvenPickierDolliesPlayerData
---- @field tick integer,
---- @field entity LuaEntity
---- @field save_time uint,
---- @field direction defines.direction
---- @field rotate? defines.direction
---- @field distance number
+---@class EvenPickierDolliesMoveEvent
+---@field player LuaPlayer
+---@field pdata EvenPickierDolliesPlayerData
+---@field tick integer,
+---@field entity LuaEntity
+---@field save_time uint,
+---@field direction defines.direction
+---@field rotate? defines.direction
+---@field distance number

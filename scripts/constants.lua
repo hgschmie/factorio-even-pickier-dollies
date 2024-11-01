@@ -2,9 +2,9 @@
 -- constants
 --
 
---- @generic K
---- @param t {[uint]: K}
---- @return {[K]: true}
+---@generic K
+---@param t {[uint]: K}
+---@return {[K]: true}
 local function array_to_dict(t)
     local t2 = {}
     for _, v in pairs(t) do t2[v] = true end
