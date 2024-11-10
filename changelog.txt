@@ -3,6 +3,8 @@ Version: 2.2.1
 Date: ????
   Changes:
     - .. and I need to learn how to write change log entries...
+    - fix "can move entities over each other" report from forum. LuaEntity::can_place_entity has
+      changed
 ---------------------------------------------------------------------------------------------------
 Version: 2.2.0
 Date: 2024-11-01

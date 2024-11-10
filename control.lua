@@ -46,6 +46,8 @@ function epd:move_entity(move_event)
     end
 
     local surface = entity.surface
+
+    -- save start position in case we have to unwind
     local start_pos = entity.position        -- Where we started from in case we have to return it
     local start_direction = entity.direction -- Direction in which the entity currently points
 
@@ -128,18 +130,15 @@ function epd:move_entity(move_event)
         player.play_sound { path = "utility/rotated_medium" }
     end
 
-    local can_place_params = {
-        name = entity.name == "entity-ghost" and entity.ghost_name or entity.name,
-        position = target_pos,
-        direction = move_event.rotate or entity.direction,
-        force = entity_force,
-        build_check_type = defines.build_check_type.manual, -- Won't allow placing on ghosts/deconstruction proxies
-        inner_name = entity.name == "entity-ghost" and entity.ghost_name or nil
-    }
-
     -- Allow collisions if the player has the setting enabled.
     local ignore_collisions = settings.global["dolly-allow-ignore-collisions"].value and player.mod_settings["dolly-ignore-collisions"].value
     if not ignore_collisions then
+        local can_place_params = {
+            name = entity,
+            position = target_pos,
+            direction = entity.direction,
+        }
+
         if not (surface.can_place_entity(can_place_params) and not surface.find_entity("entity-ghost", target_pos)) then
             return teleport_and_update(start_pos, start_direction, false, { "picker-dollies.no-room", entity.localised_name })
         end
@@ -153,7 +152,7 @@ function epd:move_entity(move_event)
         if not tools.can_wires_reach(entity) then return teleport_and_update(start_pos, start_direction, false, { "picker-dollies.wires-maxed" }) end
     end
 
-    return teleport_and_update(target_pos, move_event.rotate, true)
+    return teleport_and_update(target_pos, entity.direction, true)
 end
 
 ---@param event EventData.CustomInputEvent
