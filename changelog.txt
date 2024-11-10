@@ -2,10 +2,12 @@
 Version: 2.2.1
 Date: ????
   Changes:
+    - .. and I need to learn how to write change log entries...
 ---------------------------------------------------------------------------------------------------
 Version: 2.2.0
 Date: 2024-11-01
-  Changes: 2.0.14 fixed the "fluids disappearing" bug. Back the change out again.
+  Changes:
+    - 2.0.14 fixed the "fluids disappearing" bug. Back the change out again.
 ---------------------------------------------------------------------------------------------------
 Version: 2.1.0
 Date: 2024-10-26
