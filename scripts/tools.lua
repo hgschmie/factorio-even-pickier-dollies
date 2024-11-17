@@ -2,7 +2,7 @@
 -- tools. Some of this code has been picked out of stdlib
 --
 
-local const = require ('scripts.constants')
+local const = require('scripts.constants')
 
 ---@class EvenPickierDolliesTools
 local tools = {}
@@ -22,7 +22,7 @@ function tools.allow_moving(entity, cheat_mode)
     -- definitely blacklisted by either internal list or mod registration
     local blacklisted = const.blacklist_types[entity.type] or storage.blacklist_names[entity.name]
     if blacklisted then return false end
-    
+
     -- if it is not in the cheat whitelist, allow moving
     local only_in_cheat = const.whitelist_cheat_types[entity.type]
     if only_in_cheat then return cheat_mode end
@@ -32,6 +32,7 @@ function tools.allow_moving(entity, cheat_mode)
 end
 
 ---@param index integer
+---@return EvenPickierDolliesPlayerData
 function tools.pdata(index)
     storage.players = storage.players or {}
     storage.players[index] = storage.players[index] or {}
@@ -51,7 +52,7 @@ end
 ---@param pdata EvenPickierDolliesPlayerData
 ---@param tick uint
 ---@param save_time uint
----@return LuaEntity|nil
+---@return LuaEntity?
 function tools.get_entity_to_move(player, pdata, tick, save_time)
     -- do not remember the last moved entity. Return either the current selection or nil.
     if save_time == 0 then return player.selected end
@@ -81,12 +82,6 @@ function tools.can_wires_reach(entity)
         end
     end
     return true
-end
-
----@param player LuaPlayer
----@return uint dolly_save_entity
-function tools.get_save_entity_setting(player)
-    return player.mod_settings["dolly-save-entity"].value --[[@as uint]]
 end
 
 -- ----------------------
@@ -165,9 +160,43 @@ end
 function tools.area_expand(area, amount)
     local offset = { x = amount, y = amount }
     return {
-        left_top = tools.position_subtract(area.left_top, offset ),
+        left_top = tools.position_subtract(area.left_top, offset),
         right_bottom = tools.position_add(area.right_bottom, offset),
     }
+end
+
+---@param pos MapPosition
+---@param area BoundingBox
+---@eturn BoundingBox area
+function tools.area_normalize(pos, area)
+    return {
+        left_top = tools.position_subtract(area.left_top, pos),
+        right_bottom = tools.position_subtract(area.right_bottom, pos),
+    }
+end
+---@param new_pos MapPosition
+---@param old_pos MapPosition
+---@param area BoundingBox
+---@eturn BoundingBox area
+function tools.area_center(new_pos, old_pos, area)
+    local normalized = tools.area_normalize(old_pos, area)
+    return {
+        left_top = tools.position_add(normalized.left_top, new_pos),
+        right_bottom = tools.position_add(normalized.right_bottom, new_pos),
+    }
+end
+
+
+---@generic T : any
+---@param tbl `T`[] the array to convert
+---@param as_bool boolean? map to true instead of value
+---@return table<T, T|true> table the converted table
+function tools.array_to_dictionary(tbl, as_bool)
+    local new_tbl = {}
+    for _, v in ipairs(tbl) do
+        if type(v) == 'string' or type(v) == 'number' then new_tbl[v] = as_bool and true or v end
+    end
+    return new_tbl
 end
 
 return tools
