@@ -1,7 +1,11 @@
 ---------------------------------------------------------------------------------------------------
-Version: 2.2.2
-Date: ????
+Version: 2.3.0
+Date: 2024-11-18
   Changes:
+    - add debug visualization
+    - rework collision logic for 2.0 (fixes the "disconnect pipe bug")
+    - pay extra attention when moving fluid entities
+    - write docs
 ---------------------------------------------------------------------------------------------------
 Version: 2.2.1
 Date: 2024-11-10
