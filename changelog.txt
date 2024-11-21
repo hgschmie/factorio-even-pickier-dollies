@@ -1,7 +1,11 @@
 ---------------------------------------------------------------------------------------------------
-Version: 2.3.1
+Version: 2.4.0
 Date: ????
   Changes:
+    - 2.0.21 brought an addition to the LuaEntity::teleport API that makes all of the previous
+      teleporting around no longer necessary. This makes the code much simpler and removes all
+      of the 2.0 specific workaround for fluid entities etc. go away.
+    - automatically mine any item on the ground that is lying in the path of an entity.
 ---------------------------------------------------------------------------------------------------
 Version: 2.3.0
 Date: 2024-11-18

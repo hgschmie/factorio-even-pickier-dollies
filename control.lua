@@ -34,7 +34,6 @@ function epd:move_entity(move_event)
     local cheat_mode = player.cheat_mode
 
     local entity = move_event.entity
-    local prototype = entity.prototype
 
     local debug = self.settings.get_debug(player)
 
@@ -63,6 +62,12 @@ function epd:move_entity(move_event)
     local start_pos = entity.position        -- Where we started from in case we have to return it
     local start_direction = entity.direction -- Direction in which the entity currently points
 
+    -- Make sure there is not a rocket present.
+    -- @todo Move the rocket-silo-rocket to the correct spot.
+    if surface.find_entity("rocket-silo-rocket", start_pos) then
+        return tools.flying_text(player, { "picker-dollies.rocket-present", entity.localised_name }, start_pos)
+    end
+
     local function undo_move(message)
         -- undo everything
         entity.direction = start_direction
@@ -74,94 +79,11 @@ function epd:move_entity(move_event)
         end
     end
 
-    -- Make sure there is not a rocket present.
-    -- @todo Move the rocket-silo-rocket to the correct spot.
-    if surface.find_entity("rocket-silo-rocket", start_pos) then
-        return tools.flying_text(player, { "picker-dollies.rocket-present", entity.localised_name }, start_pos)
-    end
-
-    local distance = move_event.distance * prototype.building_grid_bit_shift          -- Distance to move the source, defaults to 1
+    local distance = move_event.distance * entity.prototype.building_grid_bit_shift          -- Distance to move the source, defaults to 1
     local target_pos = tools.position_translate(start_pos, direction, distance)       -- Where we want to go too
     local target_box = tools.area_translate(entity.bounding_box, direction, distance) -- Target selection box location
 
-    local function find_safe_position(e)
-        local fluid_careful = (self.settings.get_fluid_careful(player) and fluid_types[e.type]) or false
-        local dolly_attempts = self.settings.get_attempts(player)
-        local dolly_spacing = self.settings.get_spacing(player)
-        local dolly_direction = self.settings.get_direction(player)
-
-        for attempts = 1, dolly_attempts, 1 do
-            local offset = math.pow(dolly_spacing, (0.875 + attempts / 8)) -- 1, 1.125, 1.25, 1.375, 1.5
-            local error_color = { r = 1 } -- red for placing problems
-
-            ---@type MapPosition?
-            local safe_position = tools.position_translate(target_pos, dolly_direction, offset)
-            assert(safe_position)
-
-            safe_position = surface.find_non_colliding_position(e, safe_position, 0, 2)
-            assert(safe_position)
-
-            local bbox = tools.area_center(safe_position, target_pos, target_box)
-
-            local can_place_params = {
-                name = prototype.name,
-                position = safe_position,
-                direction = e.direction,
-                force = player.force,
-                build_check_type = defines.build_check_type.ghost_revive,
-            }
-
-            local can_place = surface.can_place_entity(can_place_params)
-
-            if fluid_careful and can_place then
-                -- check the surroundings of the safe position for fluidic entities which may connect to any pipe that is sitting around.
-                -- This check ensures that there is at least one space
-                local safe_box = tools.area_expand(bbox, 1)
-                local sb_entities = {}
-
-                for _, sb_entity in pairs(surface.find_entities_filtered {
-                    area = safe_box,
-                    type = { 'character', 'entity-ghost', 'item-entity', }, -- ignore those entities
-                    invert = true,
-                }) do
-                    if fluid_types[sb_entity.type] then table.insert(sb_entities, sb_entity) end
-                end
-
-                error_color = { r = 1, g = 0.5 } -- different error color for fluid problem
-                can_place = table_size(sb_entities) == 0
-            end
-
-            if debug then
-                rendering.draw_rectangle {
-                    color = (can_place and { g = 1 } or error_color),
-                    surface = player.surface,
-                    left_top = bbox.left_top,
-                    right_bottom = bbox.right_bottom,
-                    time_to_live = 120,
-                }
-
-                tools.flying_text(player, { 'picker-dollies.safe-pos', attempts }, safe_position, true)
-            end
-
-            if can_place then return safe_position end
-        end
-
-        return nil
-    end
-
-    local safe_position = find_safe_position(entity)
-    if not safe_position then
-        return tools.flying_text(player, { "picker-dollies.factory-too-clustered", entity.localised_name }, start_pos)
-    end
-
-    -- Move entity to the safe position temporarily
-    if not entity.teleport(safe_position) then
-        return tools.flying_text(player, { "picker-dollies.cant-be-teleported", entity.localised_name }, start_pos)
-    end
-
-    -- Entity was teleportable and is out of the way, Check to see if it fits in the new spot.
-
-    if move_event.rotate then entity.direction = move_event.rotate end -- operation was a rotate
+    if move_event.rotate then entity.direction = move_event.rotate end                -- operation was a rotate
 
     -- update the saved entity for multiple moves
     tools.save_entity(move_event.pdata, entity, move_event.tick, move_event.save_time)
@@ -169,37 +91,24 @@ function epd:move_entity(move_event)
     -- see if we can place the entity in the new spot
     local ignore_collisions = self.settings.get_allow_ignore_collisions() and self.settings.get_ignore_collisions(player)
 
-    if not ignore_collisions then
-        ---@type LuaSurface.can_place_entity_param
-        local can_place_params = {
-            name = prototype.name,
-            position = target_pos,
-            direction = entity.direction,
-            force = player.force,
-            build_check_type = defines.build_check_type.ghost_revive,
+    if debug then
+        rendering.draw_rectangle {
+            color = { r = 0.3, g = 0.3, b = 1 },
+            surface = player.surface,
+            left_top = target_box.left_top,
+            right_bottom = target_box.right_bottom,
+            time_to_live = 120,
         }
-
-        if debug then
-            rendering.draw_rectangle {
-                color = { r = 0.3, g = 0.3, b = 1 },
-                surface = player.surface,
-                left_top = target_box.left_top,
-                right_bottom = target_box.right_bottom,
-                time_to_live = 120,
-            }
-        end
-
-        if not (surface.can_place_entity(can_place_params) and not surface.find_entity("entity-ghost", target_pos)) then
-            return undo_move('picker-dollies.no-room')
-        end
     end
 
+    -- unconditional move first. If that does not work, then we don't need to bother
+    -- with anything else anyway. this can move an entity e.g. on water so it needs to
+    -- be undone
     if not entity.teleport(target_pos) then
-        -- this can happen in ignore-collisions mode
         return undo_move('picker-dollies.no-room')
     end
 
-    --  Check if all the wires can reach.
+    --  Check if all the wires can reach. If not, bail out.
     local wire_connectors = entity.get_wire_connectors(false) or {}
     if table_size(wire_connectors) > 0 then
         if not tools.can_wires_reach(entity) then
@@ -207,8 +116,25 @@ function epd:move_entity(move_event)
         end
     end
 
-    -- everything seems to be fine
-    if entity.last_user then entity.last_user = player end
+    -- move back to start position
+    assert(entity.teleport(start_pos), "Could not move back to start position!")
+
+    -- ------------
+    -- check for items to hoover up
+    -- ------------
+    local collision_entities = surface.find_entities_filtered {
+        area = target_box,
+        type = { 'item-entity', 'item-request-proxy', 'resource', }, -- ignore those entities, we deal with them below
+        invert = true,
+    }
+
+    if not ignore_collisions and
+        -- more than one entity, can't move there
+        (table_size(collision_entities) > 1
+            -- just one entity. If it is ourselves, ignore it
+            or (collision_entities[1] and (collision_entities[1].unit_number ~= entity.unit_number))) then
+        return undo_move('picker-dollies.no-room')
+    end
 
     -- Mine or move out of the way any items on the ground.
     local items_on_ground = surface.find_entities_filtered { type = "item-entity", area = target_box }
@@ -219,6 +145,15 @@ function epd:move_entity(move_event)
             item_entity.teleport(valid_pos)
         end
     end
+
+    -- all additional placement checks (e.g. on water) are done with this last teleport
+    if not entity.teleport(target_pos, nil, false, false, ignore_collisions and defines.build_check_type.script or defines.build_check_type.ghost_revive) then
+        -- this can happen in ignore-collisions mode
+        return undo_move('picker-dollies.no-room')
+    end
+
+    -- everything seems to be fine
+    if entity.last_user then entity.last_user = player end
 
     -- Move a proxy to the correct position...
     local proxy = surface.find_entity("item-request-proxy", start_pos)
