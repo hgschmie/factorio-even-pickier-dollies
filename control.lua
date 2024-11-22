@@ -105,7 +105,8 @@ function epd:move_entity(move_event)
     -- with anything else anyway. this can move an entity e.g. on water so it needs to
     -- be undone
     if not entity.teleport(target_pos) then
-        return undo_move('picker-dollies.no-room')
+        entity.direction = start_direction
+        return tools.flying_text(player, { 'picker-dollies.cant-be-teleported', entity.localised_name }, start_pos)
     end
 
     --  Check if all the wires can reach. If not, bail out.
