@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.4.0
-Date: ????
+Date: 2024-11-22
   Changes:
     - 2.0.21 brought an addition to the LuaEntity::teleport API that makes all of the previous
       teleporting around no longer necessary. This makes the code much simpler and removes all
