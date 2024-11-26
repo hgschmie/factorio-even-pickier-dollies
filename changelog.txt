@@ -1,7 +1,11 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.4.2
-Date: ????
+Date: 2024-11-26
   Changes:
+    - debugging now shows both current and future position
+    - support rotating oblong entities with other sizes than 2x1
+  Bugfixes:
+    - adding a new entity to the "know entities" list would not update the internal storage
 ---------------------------------------------------------------------------------------------------
 Version: 2.4.1
 Date: 2024-11-22
