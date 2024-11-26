@@ -8,12 +8,6 @@ local const = require('scripts.constants')
 
 local event_id = script.generate_event_name()
 
--- everything that may connect to fluid pipes
-local fluid_types = tools.array_to_dictionary({
-    'assembling-machine', 'boiler', 'fluid-turret', 'fusion-generator', 'generator', 'mining-drill',
-    'offshore-pump', 'pipe', 'pipe-to-ground', 'pump', 'storage-tank', 'thruster'
-})
-
 ---@class EvenPickierDolliesMod
 ---@field event_id uint The event id registered with the main game.
 ---@field remote_interface EvenPickierDolliesRemoteInterface

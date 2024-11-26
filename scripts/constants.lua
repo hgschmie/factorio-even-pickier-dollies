@@ -57,11 +57,4 @@ return {
         ["dolly-move-south"] = defines.direction.south,
         ["dolly-move-west"]  = defines.direction.west
     },
-
-    oblong_diags = {
-        [defines.direction.north] = defines.direction.northeast,
-        [defines.direction.south] = defines.direction.northeast,
-        [defines.direction.west]  = defines.direction.southwest,
-        [defines.direction.east]  = defines.direction.southwest
-    },
 }
