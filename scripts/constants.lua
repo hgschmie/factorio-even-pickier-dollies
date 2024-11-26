@@ -49,7 +49,7 @@ return {
     blacklist_names = array_to_dict { "pumpjack" },
 
     --- Default entity names with none-square bounding boxes. Stored in global and can be modified by the user via interface.
-    oblong_names = array_to_dict { "pump", "arithmetic-combinator", "decider-combinator", "selector-combinator", },
+    oblong_names = array_to_dict { "pump", "arithmetic-combinator", "decider-combinator", "selector-combinator", "recycler" },
 
     input_to_direction = {
         ["dolly-move-north"] = defines.direction.north,

@@ -40,6 +40,6 @@
 ---@field tick integer,
 ---@field entity LuaEntity
 ---@field save_time uint,
----@field direction defines.direction
----@field rotate? defines.direction
+---@field direction defines.direction?
+---@field rotate defines.direction?
 ---@field distance number

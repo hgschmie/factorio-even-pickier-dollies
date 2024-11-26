@@ -31,9 +31,6 @@ function epd:move_entity(move_event)
 
     local debug = self.settings.get_debug(player)
 
-    local direction = move_event.direction -- Direction to move the source
-    if not direction then return end
-
     -- Check non cheat_mode player in range.
     if not (cheat_mode or player.can_reach_entity(entity)) then
         return tools.flying_text(player, { "cant-reach" }, entity.position)
@@ -50,16 +47,27 @@ function epd:move_entity(move_event)
         return tools.flying_text(player, { "picker-dollies.wrong-force", entity.localised_name }, entity.position)
     end
 
-    local surface = entity.surface
-
     -- save start position in case we have to unwind
     local start_pos = entity.position        -- Where we started from in case we have to return it
     local start_direction = entity.direction -- Direction in which the entity currently points
+
+    local surface = entity.surface
 
     -- Make sure there is not a rocket present.
     -- @todo Move the rocket-silo-rocket to the correct spot.
     if surface.find_entity("rocket-silo-rocket", start_pos) then
         return tools.flying_text(player, { "picker-dollies.rocket-present", entity.localised_name }, start_pos)
+    end
+
+    if debug then
+        -- green box shows the current bounding box before moving/rotating
+        rendering.draw_rectangle {
+            color = { r = 0.3, g = 1, b = 0.3 },
+            surface = player.surface,
+            left_top = entity.bounding_box.left_top,
+            right_bottom = entity.bounding_box.right_bottom,
+            time_to_live = 120,
+        }
     end
 
     local function undo_move(message)
@@ -73,11 +81,19 @@ function epd:move_entity(move_event)
         end
     end
 
-    local distance = move_event.distance * entity.prototype.building_grid_bit_shift          -- Distance to move the source, defaults to 1
-    local target_pos = tools.position_translate(start_pos, direction, distance)       -- Where we want to go too
-    local target_box = tools.area_translate(entity.bounding_box, direction, distance) -- Target selection box location
+    local target_pos = start_pos
 
-    if move_event.rotate then entity.direction = move_event.rotate end                -- operation was a rotate
+    if move_event.rotate then entity.direction = move_event.rotate end  -- operation was a rotate
+
+    local target_box = entity.bounding_box
+    local direction = move_event.direction -- Direction to move the source
+
+    -- process move
+    if direction then
+        local distance = move_event.distance * entity.prototype.building_grid_bit_shift  -- Distance to move the source, defaults to 1
+        target_pos = tools.position_translate(start_pos, direction, distance)       -- Where we want to go too
+        target_box = tools.area_translate(entity.bounding_box, direction, distance) -- Target selection box location
+    end
 
     -- update the saved entity for multiple moves
     tools.save_entity(move_event.pdata, entity, move_event.tick, move_event.save_time)
@@ -86,8 +102,9 @@ function epd:move_entity(move_event)
     local ignore_collisions = self.settings.get_allow_ignore_collisions() and self.settings.get_ignore_collisions(player)
 
     if debug then
+        -- red box is the target position
         rendering.draw_rectangle {
-            color = { r = 0.3, g = 0.3, b = 1 },
+            color = { r = 1, g = 0.3, b = 0.3 },
             surface = player.surface,
             left_top = target_box.left_top,
             right_bottom = target_box.right_bottom,
@@ -219,8 +236,7 @@ function epd.rotate_oblong_entity(event, reverse)
         tick = event.tick,
         entity = entity,
         save_time = save_time,
-        direction = const.oblong_diags[rotate],
-        distance = 0.5,
+        distance = 0,
         rotate = rotate,
     }
 
@@ -254,7 +270,11 @@ end
 function epd.on_configuration_changed()
     -- Make sure the blacklists exist.
     storage.blacklist_names = storage.blacklist_names or util.copy(const.blacklist_names)
-    storage.oblong_names = storage.oblong_names or util.copy(const.oblong_names)
+    storage.oblong_names = storage.oblong_names or {}
+
+    for name in pairs(const.oblong_names) do
+        storage.oblong_names[name] = true
+    end
 
     -- Remove any invalid prototypes from the blacklists.
     for name in pairs(storage.blacklist_names) do
