@@ -49,12 +49,25 @@ return {
     blacklist_names = array_to_dict { "pumpjack" },
 
     --- Default entity names with none-square bounding boxes. Stored in global and can be modified by the user via interface.
-    oblong_names = array_to_dict { "pump", "arithmetic-combinator", "decider-combinator", "selector-combinator", "recycler" },
+    oblong_names = {
+        ["pump"] = 0.5,
+        ["arithmetic-combinator"] = 0.5,
+        ["decider-combinator"] = 0.5,
+        ["selector-combinator"] = 0.5,
+        -- ["recycler"] = 1 -- see https://forums.factorio.com/viewtopic.php?f=7&t=122949
+    },
 
     input_to_direction = {
         ["dolly-move-north"] = defines.direction.north,
         ["dolly-move-east"]  = defines.direction.east,
         ["dolly-move-south"] = defines.direction.south,
         ["dolly-move-west"]  = defines.direction.west
+    },
+
+    oblong_diags = {
+        [defines.direction.north] = defines.direction.northeast,
+        [defines.direction.south] = defines.direction.northeast,
+        [defines.direction.west]  = defines.direction.southwest,
+        [defines.direction.east]  = defines.direction.southwest
     },
 }

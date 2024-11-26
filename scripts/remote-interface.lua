@@ -33,13 +33,14 @@ return function (event_id)
         end,
 
         ---@param entity_name string
+        ---@param distance number?
         ---@return boolean
-        add_oblong_name = function (entity_name)
+        add_oblong_name = function (entity_name, distance)
             storage.oblong_names = storage.oblong_names or {}
             local proto = prototypes.entity[entity_name]
             if not proto then return false end
 
-            storage.oblong_names[entity_name] = true
+            storage.oblong_names[entity_name] = distance or 0.5
             return true
         end,
 
@@ -53,7 +54,7 @@ return function (event_id)
             return true
         end,
 
-        ---@return {[string]: true}
+        ---@return {[string]: number}
         get_oblong_names = function ()
             storage.oblong_names = storage.oblong_names or {}
             return storage.oblong_names

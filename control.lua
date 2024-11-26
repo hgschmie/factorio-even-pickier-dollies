@@ -224,7 +224,9 @@ function epd.rotate_oblong_entity(event, reverse)
     local entity = tools.get_entity_to_move(player, pdata, event.tick, save_time)
     if not entity then return end
 
-    if not (storage.oblong_names[entity.name] and tools.allow_moving(entity, player.cheat_mode)) then return end
+    local distance = storage.oblong_names[entity.name]
+
+    if not (distance and tools.allow_moving(entity, player.cheat_mode)) then return end
     if not (player.cheat_mode or player.can_reach_entity(entity)) then return end
 
     local rotate = reverse and tools.direction_previous(entity.direction) or tools.direction_next(entity.direction)
@@ -236,7 +238,8 @@ function epd.rotate_oblong_entity(event, reverse)
         tick = event.tick,
         entity = entity,
         save_time = save_time,
-        distance = 0,
+        direction = const.oblong_diags[rotate],
+        distance = distance,
         rotate = rotate,
     }
 
@@ -272,8 +275,14 @@ function epd.on_configuration_changed()
     storage.blacklist_names = storage.blacklist_names or util.copy(const.blacklist_names)
     storage.oblong_names = storage.oblong_names or {}
 
-    for name in pairs(const.oblong_names) do
-        storage.oblong_names[name] = true
+    for name, distance in pairs(const.oblong_names) do
+        storage.oblong_names[name] = distance
+    end
+
+    for name in pairs(storage.oblong_names) do
+        if type(storage.oblong_names[name]) ~= 'number' then
+            storage.oblong_names[name] = 0.5 -- default offset for a 2x1 oblong entity
+        end
     end
 
     -- Remove any invalid prototypes from the blacklists.
