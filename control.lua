@@ -3,6 +3,7 @@
 --
 
 local util = require('util')
+local collision_mask_util = require('collision-mask-util')
 local tools = require('scripts.tools')
 local const = require('scripts.constants')
 
@@ -83,16 +84,16 @@ function epd:move_entity(move_event)
 
     local target_pos = start_pos
 
-    if move_event.rotate then entity.direction = move_event.rotate end  -- operation was a rotate
+    if move_event.rotate then entity.direction = move_event.rotate end -- operation was a rotate
 
     local target_box = entity.bounding_box
     local direction = move_event.direction -- Direction to move the source
 
     -- process move
     if direction then
-        local distance = move_event.distance * entity.prototype.building_grid_bit_shift  -- Distance to move the source, defaults to 1
-        target_pos = tools.position_translate(start_pos, direction, distance)       -- Where we want to go too
-        target_box = tools.area_translate(entity.bounding_box, direction, distance) -- Target selection box location
+        local distance = move_event.distance * entity.prototype.building_grid_bit_shift -- Distance to move the source, defaults to 1
+        target_pos = tools.position_translate(start_pos, direction, distance)           -- Where we want to go too
+        target_box = tools.area_translate(entity.bounding_box, direction, distance)     -- Target selection box location
     end
 
     -- update the saved entity for multiple moves
@@ -141,11 +142,21 @@ function epd:move_entity(move_event)
     }
 
     if not ignore_collisions and
-        -- more than one entity, can't move there
+        -- more than one entity needs detailed collision checking
         (table_size(collision_entities) > 1
-            -- just one entity. If it is ourselves, ignore it
+            -- if there is only one entity and it is ourselves, don't bother doing the detailed checking
             or (collision_entities[1] and (collision_entities[1].unit_number ~= entity.unit_number))) then
-        return undo_move('picker-dollies.no-room')
+        -- do detailed collision check, entities that don't collide are ok (often invisible entities)
+        for _, collision_entity in pairs(collision_entities) do
+            -- don't check the entity against itself
+            if collision_entity.unit_number ~= entity.unit_number
+                -- only check layer collision if both entities have collision mask layers -- see https://forums.factorio.com/viewtopic.php?f=7&t=123332
+                and entity.prototype.collision_mask.layers and collision_entity.prototype.collision_mask.layers
+                -- but when they collide, do not move
+                and collision_mask_util.masks_collide(entity.prototype.collision_mask, collision_entity.prototype.collision_mask) then
+                return undo_move('picker-dollies.no-room')
+            end
+        end
     end
 
     -- Mine or move out of the way any items on the ground.
