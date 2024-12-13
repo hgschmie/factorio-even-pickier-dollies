@@ -32,4 +32,11 @@ data:extend {
         default_value = false,
         order = 'ba',
     },
+    {
+        name = "dolly-magic-move",
+        setting_type = 'startup',
+        type = "bool-setting",
+        default_value = false,
+        order = 'ca',
+    },
 }

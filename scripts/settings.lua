@@ -30,4 +30,9 @@ function mod_settings.get_debug(player)
     return player.mod_settings['dolly-debug'].value or false --[[@as boolean]]
 end
 
+---@return boolean
+function mod_settings.get_magic_move()
+    return settings.startup['dolly-magic-move'].value or false --[[@as boolean]]
+end
+
 return mod_settings

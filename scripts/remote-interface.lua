@@ -22,12 +22,12 @@
 --- ```
 --- If you are using the remote interface for adding/removing entity names make sure to add PickerDollies as an optional dependency.
 
----@param event_id uint
+---@param event_id defines.events
 ---@return EvenPickierDolliesRemoteInterface
 return function (event_id)
     return {
 
-        ---@return uint event_id The event id to use when registering for dollies events.
+        ---@return defines.events event_id The event id to use when registering for dollies events.
         dolly_moved_entity_id = function ()
             return event_id
         end,

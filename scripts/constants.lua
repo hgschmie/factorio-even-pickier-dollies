@@ -14,10 +14,6 @@ end
 return {
     api_name = 'PickerDollies',
 
-    -- offset for temporary teleport. Default is 20 tiles.
-    tile_offset = 20,
-    -- number of retries when teleporting entities around.
-    teleport_retries = 5,
     -- extension area in which to repair connections for loaders, beacons, cliffs and mining drills.
     grid_size = 32,
 
@@ -48,6 +44,23 @@ return {
     --- Default entity names to blacklist from moving. Stored in global and can be modified by the user via interface.
     blacklist_names = array_to_dict { "pumpjack" },
 
+    --- Entities where "magic moving" by creating clones is supported.
+
+    --- currently only 1x1 sized types. Underground belt is its own can of worms...
+    ---@type table<string, epd.CloneControl
+    whitelist_magic_move_types = {
+        ['loader-1x1'] = {
+            control_fields = { 'circuit_set_filters', 'circuit_read_transfers', 'circuit_enable_disable', 'connect_to_logistic_network', },
+            control_objects = { 'circuit_condition', 'logistic_condition', },
+            fields = { 'loader_type', 'loader_filter_mode', },
+            filters = true,
+        },
+        ['transport-belt'] = {
+            control_fields = { 'read_contents', 'read_contents_mode', 'circuit_enable_disable', 'connect_to_logistic_network', },
+            control_objects = { 'circuit_condition', 'logistic_condition', },
+        },
+    },
+
     --- Default entity names with none-square bounding boxes. Stored in global and can be modified by the user via interface.
     oblong_names = {
         ["pump"] = 0.5,
@@ -69,5 +82,9 @@ return {
         [defines.direction.south] = defines.direction.northeast,
         [defines.direction.west]  = defines.direction.southwest,
         [defines.direction.east]  = defines.direction.southwest
+    },
+
+    belt_types = array_to_dict {
+        'lane-splitter', 'linked-belt', 'loader', 'loader-1x1', 'splitter', 'transport-belt', 'underground-belt',
     },
 }

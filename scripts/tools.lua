@@ -4,6 +4,8 @@
 
 local const = require('scripts.constants')
 
+local collision_mask_util = require('collision-mask-util')
+
 ---@class EvenPickierDolliesTools
 local tools = {}
 
@@ -29,6 +31,88 @@ function tools.allow_moving(entity, cheat_mode)
 
     -- otherwise, allow moving
     return true
+end
+
+--- returns true if entity is belt connectable
+---@param entity LuaEntity?
+function tools.is_belt_type(entity)
+    if not (entity and entity.valid) then return false end
+    return const.belt_types[entity.type] or false
+end
+
+---@param entity LuaEntity?
+---@param position MapPosition
+---@param control epd.CloneControl
+---@return LuaEntity?
+function tools.clone_entity(entity, position, control)
+    if not (entity and entity.valid) then return nil end
+
+    local result = entity.surface.create_entity {
+        name = entity.name,
+        position = position,
+        direction = entity.direction,
+        quality = entity.quality,
+        force = entity.force,
+        move_stuck_players = true,
+        create_build_effect_smoke = false,
+    }
+
+    if not result then return nil end
+
+    if control.fields then
+        for _, field in pairs(control.fields) do
+            result[field] = entity[field]
+        end
+    end
+
+    -- connect wires on the new entity to the same entities as the source.
+    local wire_connectors = entity.get_wire_connectors(false) or {}
+    for _, wire_connector in pairs(wire_connectors) do
+        local target_wire_connector = result.get_wire_connector(wire_connector.wire_connector_id, true)
+        for _, connection in pairs(wire_connector.connections) do
+            connection.target.connect_to(target_wire_connector, false, connection.origin)
+        end
+    end
+
+    -- for belts, copy the items over
+    if tools.is_belt_type(entity) then
+        -- move items on belt. This should work but does not (https://forums.factorio.com/viewtopic.php?f=25&t=124332)
+        for line_index = 1, entity.get_max_transport_line_index() do
+            local source = entity.get_transport_line(line_index)
+            local dest = result.get_transport_line(line_index)
+            for item_index = 1, #source do
+                dest.insert_at_back(source[item_index])
+            end
+            source.clear()
+        end
+    end
+
+    -- copy control behavior, if supported
+    local src_control_behavior = entity.get_or_create_control_behavior()
+    if src_control_behavior then
+        local dst_control_behavior = result.get_or_create_control_behavior()
+        assert(dst_control_behavior)
+
+        if control.control_fields then
+            for _, field in pairs(control.control_fields) do
+                dst_control_behavior[field] = src_control_behavior[field]
+            end
+        end
+
+        if control.control_objects then
+            for _, object in pairs(control.control_objects) do
+                dst_control_behavior[object] = util.copy(src_control_behavior[object])
+            end
+        end
+    end
+
+    if control.filters then
+        for i = 1, entity.filter_slot_count do
+            result.set_filter(i, entity.get_filter(i))
+        end
+    end
+
+    return result
 end
 
 ---@param index integer
@@ -72,16 +156,68 @@ function tools.get_entity_to_move(player, pdata, tick, save_time)
 end
 
 --- Returns true if the wires can reach.
----@param entity LuaEntity
+---
+--- This performs a somewhat convoluted operation:
+--- - for all wire connectors on the entity, find the corresponding connector on the target entity
+--- - for each connection, find the target connector (on the other side) and see if it can reach "back" to the target entity connector
+---
+--- This allow checking whether wires that connect e.g. to a belt will connect to a new belt if that was moved (iaw deleted and re-created).
+---@param entity LuaEntity with all wire connections to check
+---@param target_entity LuaEntity? Entity that should be reached
 ---@return boolean
-function tools.can_wires_reach(entity)
+function tools.can_wires_reach(entity, target_entity)
     local wire_connectors = entity.get_wire_connectors(false) or {}
+    if table_size(wire_connectors) == 0 then return true end
+
+    local target_entity = target_entity or entity
     for _, wire_connector in pairs(wire_connectors) do
+        local target_wire_connector = target_entity.get_wire_connector(wire_connector.wire_connector_id, true)
         for _, connection in pairs(wire_connector.connections) do
-            if not wire_connector.can_wire_reach(connection.target) then return false end
+            if not connection.target.can_wire_reach(target_wire_connector) then return false end
         end
     end
     return true
+end
+
+---@param entity LuaEntity
+---@param target_box BoundingBox
+---@param ignore_collisions boolean
+---@return boolean collides
+function tools.has_collision(entity, target_box, ignore_collisions)
+    if ignore_collisions then return false end
+
+    local collision_entities = entity.surface.find_entities_filtered {
+        area = target_box,
+        type = { 'item-entity', 'item-request-proxy', 'resource', }, -- ignore those entities, we deal with them below
+        invert = true,
+    }
+
+    if #collision_entities == 0 or (#collision_entities == 1 and collision_entities[1].unit_number == entity.unit_number) then return false end
+
+    for _, collision_entity in pairs(collision_entities) do
+        -- don't check the entity against itself
+        if collision_entity.unit_number ~= entity.unit_number
+            -- but when they collide, do not move
+            and collision_mask_util.masks_collide(entity.prototype.collision_mask, collision_entity.prototype.collision_mask) then
+            return true
+        end
+    end
+
+    return false
+end
+
+---@param player LuaPlayer
+---@param target_box BoundingBox
+function tools.mine_ground_items(player, target_box)
+    -- Mine or move out of the way any items on the ground.
+    local items_on_ground = player.surface.find_entities_filtered { type = "item-entity", area = target_box }
+    for _, item_entity in pairs(items_on_ground) do
+        if item_entity.valid and not player.mine_entity(item_entity) then
+            local item_pos = item_entity.position
+            local valid_pos = player.surface.find_non_colliding_position(item_entity, item_pos, 50, .20) or item_pos
+            item_entity.teleport(valid_pos)
+        end
+    end
 end
 
 -- ----------------------
@@ -174,6 +310,7 @@ function tools.area_normalize(pos, area)
         right_bottom = tools.position_subtract(area.right_bottom, pos),
     }
 end
+
 ---@param new_pos MapPosition
 ---@param old_pos MapPosition
 ---@param area BoundingBox
@@ -185,7 +322,6 @@ function tools.area_center(new_pos, old_pos, area)
         right_bottom = tools.position_add(normalized.right_bottom, new_pos),
     }
 end
-
 
 ---@generic T : any
 ---@param tbl `T`[] the array to convert
