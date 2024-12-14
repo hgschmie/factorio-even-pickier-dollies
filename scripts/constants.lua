@@ -33,13 +33,13 @@ return {
         -- environment
         "cliff", "tree", "resource", "explosion", "particle-source", "fire", "sticker", "stream", "beam", "artillery-flare", "projectile",
         -- internal stuff
-        "item-request-proxy", "tile-ghost", "item-entity", "deconstructible-tile-proxy", "arrow", "highlight-box", "entity-ghost", "speech-bubble", "smoke-with-trigger",
+        "item-request-proxy", "tile-ghost", "item-entity", "deconstructible-tile-proxy", "arrow", "highlight-box", "speech-bubble", "smoke-with-trigger",
         -- misc
         "spider-leg",
     },
 
     --- Entity types that can only be moved in cheat_mode.
-    whitelist_cheat_types = array_to_dict { "character", "unit", "unit-spawner", "car", "spider-vehicle", "simple-entity", "corpse", "character-corpse" },
+    whitelist_cheat_types = array_to_dict { "entity-ghost", "character", "unit", "unit-spawner", "car", "spider-vehicle", "simple-entity", "corpse", "character-corpse" },
 
     --- Default entity names to blacklist from moving. Stored in global and can be modified by the user via interface.
     blacklist_names = array_to_dict { "pumpjack" },
