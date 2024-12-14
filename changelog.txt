@@ -3,6 +3,8 @@ Version: 2.5.0
 Date: ????
   Changes:
     - add "transporter mode" that allows moving of belts and loaders
+    - allow ghost moving in cheat mode (suggest on mod discussions)
+    - only do rocket check if trying to move a rocket silo (reported on mod discussions by @kuxynator)
 ---------------------------------------------------------------------------------------------------
 Version: 2.4.3
 Date: 2024-11-30

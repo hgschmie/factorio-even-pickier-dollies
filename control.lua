@@ -58,7 +58,7 @@ function epd:move_entity(move_event)
 
     -- Make sure there is not a rocket present.
     -- @todo Move the rocket-silo-rocket to the correct spot.
-    if surface.find_entity("rocket-silo-rocket", start_pos) then
+    if entity.type == 'rocket-silo' and surface.find_entity("rocket-silo-rocket", start_pos) then
         return tools.flying_text(player, { "picker-dollies.rocket-present", entity.localised_name }, start_pos)
     end
 
