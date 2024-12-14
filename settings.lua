@@ -33,7 +33,7 @@ data:extend {
         order = 'ba',
     },
     {
-        name = "dolly-magic-move",
+        name = "dolly-transporter-mode",
         setting_type = 'startup',
         type = "bool-setting",
         default_value = false,

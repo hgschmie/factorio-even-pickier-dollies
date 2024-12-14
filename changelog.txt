@@ -2,7 +2,7 @@
 Version: 2.5.0
 Date: ????
   Changes:
-    - add "magic move" mode that allows moving of belts and loaders
+    - add "transporter mode" that allows moving of belts and loaders
 ---------------------------------------------------------------------------------------------------
 Version: 2.4.3
 Date: 2024-11-30

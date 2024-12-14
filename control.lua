@@ -50,6 +50,7 @@ function epd:move_entity(move_event)
     -- save start position in case we have to unwind
     local start_pos = entity.position        -- Where we started from in case we have to return it
     local start_direction = entity.direction -- Direction in which the entity currently points
+    local start_unit_number = entity.unit_number
 
     local surface = entity.surface
 
@@ -125,13 +126,13 @@ function epd:move_entity(move_event)
 
     -- unconditional teleport first.  this can move an entity e.g. on water so it needs to be undone
     if not entity.teleport(target_pos) then
-        -- If that does not work, try falling back to magic "create entity clone, destroy original entity move".
+        -- If that does not work, try falling back to transporter mode: "create entity clone, destroy original entity move".
 
-        if not self.settings.get_magic_move() then return undo_move('picker-dollies.cant-be-teleported') end
+        if not self.settings.get_transporter_mode() then return undo_move('picker-dollies.cant-be-teleported') end
 
         -- only allow whitelisted types to be moved
-        local magic_move_control = const.whitelist_magic_move_types[entity.type]
-        if not magic_move_control then return undo_move('picker-dollies.cant-be-teleported') end
+        local transporter_mode_enabled = const.whitelist_transporter_mode_types[entity.type]
+        if not transporter_mode_enabled then return undo_move('picker-dollies.cant-be-teleported') end
 
         if not player.can_place_entity {
                 name = entity,
@@ -139,7 +140,7 @@ function epd:move_entity(move_event)
                 direction = entity.direction
             } then return undo_move('picker-dollies.no-room') end
 
-        target_entity = tools.clone_entity(entity, target_pos, magic_move_control)
+        target_entity = tools.clone_entity(entity, target_pos, transporter_mode_enabled)
 
         if not target_entity then return undo_move('picker-dollies.no-room') end
     else
@@ -197,6 +198,8 @@ function epd:move_entity(move_event)
         player_index = player.index,
         moved_entity = target_entity,
         start_pos = start_pos,
+        start_direction = start_direction,
+        start_unit_number = start_unit_number,
         tick = game.tick,
         name = event_id,
     }

@@ -54,7 +54,7 @@ return function (event_id)
             return true
         end,
 
-        ---@return {[string]: number}
+        ---@return table<string, number>
         get_oblong_names = function ()
             storage.oblong_names = storage.oblong_names or {}
             return storage.oblong_names
@@ -81,7 +81,7 @@ return function (event_id)
             return true
         end,
 
-        ---@return {[string]: true}
+        ---@return table<string, true>
         get_blacklist_names = function ()
             storage.blacklist_names = storage.blacklist_names or {}
             return storage.blacklist_names

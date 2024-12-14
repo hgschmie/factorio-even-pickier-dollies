@@ -31,8 +31,8 @@ function mod_settings.get_debug(player)
 end
 
 ---@return boolean
-function mod_settings.get_magic_move()
-    return settings.startup['dolly-magic-move'].value or false --[[@as boolean]]
+function mod_settings.get_transporter_mode()
+    return settings.startup['dolly-transporter-mode'].value or false --[[@as boolean]]
 end
 
 return mod_settings

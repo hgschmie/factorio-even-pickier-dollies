@@ -7,7 +7,7 @@
 --- constants.lua
 ----------------------------------------------------------------------------------------------------
 
----@class epd.CloneControl
+---@class epd.TransporterControl
 ---@field control_fields string[]?
 ---@field control_objects string[]?
 ---@field fields string[]?
@@ -21,6 +21,8 @@
 ---@field player_index uint
 ---@field moved_entity LuaEntity
 ---@field start_pos MapPosition
+---@field start_direction defines.direction
+---@field start_unit_number integer?
 
 ---@class EvenPickierDolliesRemoteInterface
 ---@field dolly_moved_entity_id fun(): uint

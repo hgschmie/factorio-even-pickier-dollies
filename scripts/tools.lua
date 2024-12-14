@@ -42,7 +42,7 @@ end
 
 ---@param entity LuaEntity?
 ---@param position MapPosition
----@param control epd.CloneControl
+---@param control epd.TransporterControl
 ---@return LuaEntity?
 function tools.clone_entity(entity, position, control)
     if not (entity and entity.valid) then return nil end

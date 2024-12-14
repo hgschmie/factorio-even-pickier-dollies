@@ -44,11 +44,11 @@ return {
     --- Default entity names to blacklist from moving. Stored in global and can be modified by the user via interface.
     blacklist_names = array_to_dict { "pumpjack" },
 
-    --- Entities where "magic moving" by creating clones is supported.
+    --- Entities where "transporter mode" is supported.
 
     --- currently only 1x1 sized types. Underground belt is its own can of worms...
-    ---@type table<string, epd.CloneControl
-    whitelist_magic_move_types = {
+    ---@type table<string, epd.TransporterControl>
+    whitelist_transporter_mode_types = {
         ['loader-1x1'] = {
             control_fields = { 'circuit_set_filters', 'circuit_read_transfers', 'circuit_enable_disable', 'connect_to_logistic_network', },
             control_objects = { 'circuit_condition', 'logistic_condition', },
