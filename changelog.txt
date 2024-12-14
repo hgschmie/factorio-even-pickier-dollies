@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.5.0
-Date: ????
+Date: 2024-12-14
   Changes:
     - add "transporter mode" that allows moving of belts and loaders
     - allow ghost moving in cheat mode (suggest on mod discussions)
