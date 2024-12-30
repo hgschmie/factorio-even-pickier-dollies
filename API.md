@@ -32,7 +32,7 @@ local function on_epd_event(event)
 end
 
 local function init_epd_event()
-    local epd_api = remote_interfaces['PickerDollies']
+    local epd_api = remote.interfaces['PickerDollies']
     assert(epd_api)
 
     local epd_event_id = remote.call("PickerDollies", "dolly_moved_entity_id")
