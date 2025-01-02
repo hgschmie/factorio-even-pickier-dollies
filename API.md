@@ -109,4 +109,4 @@ Removes an entity from the oblong rotation list. Calling this method with an ent
 
 ### get_oblong_names(): table<string, number>
 
-Returns a table where the keys are the entity names registered for oblong rotation. The value is the distance value (This is different from PickerDollies, where the value is always the `true` cosnstant).
+Returns a table where the keys are the entity names registered for oblong rotation. The value is the distance value (This is different from PickerDollies, where the value is always the `true` constant).

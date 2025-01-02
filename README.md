@@ -12,4 +12,4 @@ Note: Moving some modded entities that rely on position can cause issues. There 
 
 The [EPD API is documented here](https://github.com/hgschmie/factorio-even-pickier-dollies/blob/main/API.md).
 
-[![Even Pickier Dollies in Action](https://github.com/hgschmie/factorio-even-pickier-dollies/blob/main/.portal/even-pickier-dollies.gif)]
+[![Even Pickier Dollies in Action](https://raw.githubusercontent.com/hgschmie/factorio-even-pickier-dollies/refs/heads/main/.portal/even-pickier-dollies.gif)]
