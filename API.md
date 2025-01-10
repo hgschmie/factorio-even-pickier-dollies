@@ -32,7 +32,7 @@ local function on_epd_event(event)
 end
 
 local function init_epd_event()
-    local epd_api = remote_interfaces['PickerDollies']
+    local epd_api = remote.interfaces['PickerDollies']
     assert(epd_api)
 
     local epd_event_id = remote.call("PickerDollies", "dolly_moved_entity_id")
@@ -73,7 +73,7 @@ Some mods want to exclude their entities (or hidden entities) from being moved b
 Adds an entity to the blacklist. The entity must be defined in `prototypes.entity`.
 
 ```lua
-local epd_api = remote_interfaces['PickerDollies']
+local epd_api = remote.interfaces['PickerDollies']
 assert(epd_api)
 
 remote.call('PickerDollies', 'add_blacklist_name', 'my_immovable_entity')
@@ -95,9 +95,9 @@ EPD supports rotating oblong (rectangular) entities. By default, it only support
 
 Unlike the original PickerDollies, which only supported 1x2 tiles entities (e.g. a combinator), EPD can rotate any oblong entity if the distance parameter is set correctly. Distance is how far the midpoint of the entity is moving when rotating. This sounds complicated but is pretty straightforward:
 
-For a 1x2 entity, the midpoint is at { 1, 0.5 } and moves to { 0.5, 1 } when rotated. The midpoint moves by 0.5 tiles in x and y direction. This is the distance (it is also the default if no distance is given, which is compatible to PickerDollies).
+For a 1x2 entity, the midpoint is at `{ 1, 0.5 }` and moves to `{ 0.5, 1 }` when rotated. The midpoint moves by 0.5 tiles in x and y direction. This is the distance (it is also the default if no distance is given, which is compatible to PickerDollies).
 
-For a 2x4 entity, the midpoint is at { 2, 1 } and moves to { 1, 2} when rotated. The midpoint moves by 1 tile in x and y direction. So the distance is 1.
+For a 2x4 entity, the midpoint is at `{ 2, 1 }` and moves to `{ 1, 2 }` when rotated. The midpoint moves by 1 tile in x and y direction. So the distance is 1.
 
 ### add_oblong_name(entity_name: string, distance: number?)
 
