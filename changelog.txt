@@ -2,6 +2,8 @@
 Version: 2.5.1
 Date: ????
   Changes:
+    - add russian locale (thanks @dodther on github!)
+    - raise 'script_raised_teleport' if a regular entity is moved. (suggested by @heinwessels on github)
 ---------------------------------------------------------------------------------------------------
 Version: 2.5.0
 Date: 2024-12-14

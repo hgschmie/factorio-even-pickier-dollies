@@ -170,14 +170,13 @@ function epd:move_entity(move_event)
 
     if entity_has_moved then
         -- all additional placement checks (e.g. on water) are done with this last teleport
-        if not entity.teleport(target_pos, nil, false, false, ignore_collisions and defines.build_check_type.script or defines.build_check_type.ghost_revive) then
+        if not entity.teleport(target_pos, nil, true, false, ignore_collisions and defines.build_check_type.script or defines.build_check_type.ghost_revive) then
             -- this can happen in ignore-collisions mode
             return undo_move('picker-dollies.no-room')
         end
     else
         -- update the saved entity for multiple moves
         tools.save_entity(move_event.pdata, target_entity, move_event.tick, move_event.save_time)
-
         entity.destroy()
     end
 
@@ -204,7 +203,7 @@ function epd:move_entity(move_event)
         name = event_id,
     }
 
-    script.raise_event(self.event_id --[[@as integer]], event_data)
+    script.raise_event(self.event_id, event_data)
     player.play_sound { path = "utility/rotated_medium" }
 end
 

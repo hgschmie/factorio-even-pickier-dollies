@@ -8,6 +8,12 @@ Starting with release 2.5.0, "transporter mode" can be enabled in the startup se
 
 Hover over entities and use the keybindings to move entities around. Entities will keep their wire connections and settings. This allows you to build your set up spaced out and when you are finished push it all together for a nice tight build. Some entities can't be shoved around. Also respects max wire distance.
 
+## Script support
+
+Whenever an entity is moved successfully, the `script_raised_teleported` event is raised. This does *NOT* happen in 'transporter' mode as the entity is not teleported, but destroyed and recreated.
+
+## API Support
+
 Note: Moving some modded entities that rely on position can cause issues. There is an API available that mod authors can use to be notified of these events.
 
 The [EPD API is documented here](https://github.com/hgschmie/factorio-even-pickier-dollies/blob/main/API.md).
