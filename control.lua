@@ -286,11 +286,6 @@ function epd.rotate_saved_dolly(event, reverse)
     entity.rotate { reverse = reverse, by_player = player }
 end
 
-function epd.on_init()
-    storage.blacklist_names = util.copy(const.blacklist_names)
-    storage.oblong_names = util.copy(const.oblong_names)
-end
-
 function epd.on_configuration_changed()
     -- Make sure the blacklists exist.
     storage.blacklist_names = storage.blacklist_names or util.copy(const.blacklist_names)
@@ -315,10 +310,28 @@ function epd.on_configuration_changed()
     end
 end
 
-script.on_event({ "dolly-move-north", "dolly-move-east", "dolly-move-south", "dolly-move-west" }, epd.dolly_move)
-script.on_event("dolly-rotate-rectangle", function (event) epd.rotate_oblong_entity(event, false) end)
-script.on_event("dolly-rotate-rectangle-reverse", function (event) epd.rotate_oblong_entity(event, true) end)
-script.on_event("dolly-rotate-saved", function (event) epd.rotate_saved_dolly(event, false) end)
+function epd.register_events()
+    script.on_event({ "dolly-move-north", "dolly-move-east", "dolly-move-south", "dolly-move-west" }, epd.dolly_move)
+    script.on_event("dolly-rotate-rectangle", function (event) epd.rotate_oblong_entity(event, false) end)
+    script.on_event("dolly-rotate-rectangle-reverse", function (event) epd.rotate_oblong_entity(event, true) end)
+    script.on_event("dolly-rotate-saved", function (event) epd.rotate_saved_dolly(event, false) end)
 script.on_event("dolly-rotate-saved-reverse", function (event) epd.rotate_saved_dolly(event, true) end)
+
+    script.on_configuration_changed(epd.on_configuration_changed)
+end
+
+-- event registration
+
+function epd.on_init()
+    storage.blacklist_names = util.copy(const.blacklist_names)
+    storage.oblong_names = util.copy(const.oblong_names)
+
+    epd.register_events()
+end
+
+function epd.on_load()
+    epd.register_events()
+end
+
 script.on_init(epd.on_init)
-script.on_configuration_changed(epd.on_configuration_changed)
+script.on_load(epd.on_load)
