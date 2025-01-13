@@ -108,7 +108,7 @@ function epd:move_entity(move_event)
     end
 
     -- update the saved entity for multiple moves.
-    tools.save_entity(move_event.pdata, entity, move_event.tick, move_event.save_time)
+    tools.save_entity(move_event.pdata, entity, move_event.tick)
 
     -- see if we can place the entity in the new spot
     local ignore_collisions = self.settings.get_allow_ignore_collisions() and self.settings.get_ignore_collisions(player)
@@ -176,7 +176,7 @@ function epd:move_entity(move_event)
         end
     else
         -- update the saved entity for multiple moves
-        tools.save_entity(move_event.pdata, target_entity, move_event.tick, move_event.save_time)
+        tools.save_entity(move_event.pdata, target_entity, move_event.tick)
         entity.destroy()
     end
 
@@ -281,8 +281,23 @@ function epd.rotate_saved_dolly(event, reverse)
     local entity = tools.get_entity_to_move(player, pdata, event.tick, save_time)
     if not entity or not entity.supports_direction then return end
 
-    tools.save_entity(pdata, entity, event.tick, save_time)
+    tools.save_entity(pdata, entity, event.tick)
     entity.rotate { reverse = reverse, by_player = player }
+end
+
+function epd.selected_entity_changed(event)
+    ---@type LuaPlayer?
+    local player = game.get_player(event.player_index)
+    if not (player and player.selected) then return end
+    local pdata = tools.pdata(event.player_index)
+
+    local save_time = epd.settings.get_save_entity(player)
+    local entity = tools.get_saved_entity(pdata, event.tick, save_time)
+
+    if not (entity and entity.valid) then return end
+    if entity.unit_number == player.selected.unit_number then return end
+
+    tools.save_entity(pdata, nil, event.tick)
 end
 
 function epd.on_configuration_changed()
@@ -311,12 +326,14 @@ end
 
 function epd.register_events()
     script.on_event({ "dolly-move-north", "dolly-move-east", "dolly-move-south", "dolly-move-west" }, epd.dolly_move)
+
     script.on_event("dolly-rotate-rectangle", function (event) epd.rotate_oblong_entity(event, false) end)
     script.on_event("dolly-rotate-rectangle-reverse", function (event) epd.rotate_oblong_entity(event, true) end)
     script.on_event("dolly-rotate-saved", function (event) epd.rotate_saved_dolly(event, false) end)
-script.on_event("dolly-rotate-saved-reverse", function (event) epd.rotate_saved_dolly(event, true) end)
+    script.on_event("dolly-rotate-saved-reverse", function (event) epd.rotate_saved_dolly(event, true) end)
 
     script.on_configuration_changed(epd.on_configuration_changed)
+    script.on_event(defines.events.on_selected_entity_changed, epd.selected_entity_changed)
 end
 
 -- event registration

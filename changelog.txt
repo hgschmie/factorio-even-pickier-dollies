@@ -1,9 +1,10 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.5.1
-Date: ????
+Date: 2025-01-13
   Changes:
     - add russian locale (thanks @dodther on github!)
     - raise 'script_raised_teleport' if a regular entity is moved. (suggested by @heinwessels on github)
+    - deselect the "saved" entity whenever another entity is touched by the player
 ---------------------------------------------------------------------------------------------------
 Version: 2.5.0
 Date: 2024-12-14

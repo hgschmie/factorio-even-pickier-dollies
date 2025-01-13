@@ -124,12 +124,22 @@ function tools.pdata(index)
 end
 
 ---@param pdata EvenPickierDolliesPlayerData
----@param entity LuaEntity
+---@param entity LuaEntity?
 ---@param tick uint
----@param save_time uint
-function tools.save_entity(pdata, entity, tick, save_time)
+function tools.save_entity(pdata, entity, tick)
     pdata.dolly = entity
     pdata.dolly_tick = tick
+end
+
+---@param pdata EvenPickierDolliesPlayerData
+---@param tick uint
+---@param save_time uint
+---@return LuaEntity?
+function tools.get_saved_entity(pdata, tick, save_time)
+    if pdata.dolly and (not pdata.dolly.valid or tick > (pdata.dolly_tick + second * save_time)) then
+        pdata.dolly = nil
+    end
+    return pdata.dolly
 end
 
 ---@param player LuaPlayer
@@ -142,14 +152,14 @@ function tools.get_entity_to_move(player, pdata, tick, save_time)
     if save_time == 0 then return player.selected end
 
     -- clean out current entity if it is invalid or expired
-    if pdata.dolly and (not pdata.dolly.valid or tick > (pdata.dolly_tick + second * save_time)) then pdata.dolly = nil end
+    local dolly = tools.get_saved_entity(pdata, tick, save_time)
 
     -- if the player has not selected anything, return the current entity or nil
-    if not player.selected then return pdata.dolly end
+    if not player.selected then return dolly end
 
     -- if the selected object can not be moved and there is a current object, return that, otherwise the selected object
-    if pdata.dolly and not tools.allow_moving(player.selected, player.cheat_mode) then
-        return pdata.dolly
+    if dolly and not tools.allow_moving(player.selected, player.cheat_mode) then
+        return dolly
     else
         return player.selected
     end
