@@ -35,4 +35,10 @@ function mod_settings.get_transporter_mode()
     return settings.startup['dolly-transporter-mode'].value or false --[[@as boolean]]
 end
 
+---@param player LuaPlayer
+---@return boolean
+function mod_settings.get_clear_entity(player)
+    return player.mod_settings['dolly-clear-entity'].value or false --[[@as boolean]]
+end
+
 return mod_settings

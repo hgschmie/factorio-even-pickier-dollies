@@ -1,7 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.5.2
-Date: ????
+Date: 2025-01-15
   Changes:
+    - Make deselection of the "saved" entity configurable (suggested by @Magnus.Ertel on the mod discussion forum)
 ---------------------------------------------------------------------------------------------------
 Version: 2.5.1
 Date: 2025-01-13

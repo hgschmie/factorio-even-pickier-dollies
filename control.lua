@@ -289,6 +289,9 @@ function epd.selected_entity_changed(event)
     ---@type LuaPlayer?
     local player = game.get_player(event.player_index)
     if not (player and player.selected) then return end
+
+    if not epd.settings.get_clear_entity(player) then return end
+
     local pdata = tools.pdata(event.player_index)
 
     local save_time = epd.settings.get_save_entity(player)

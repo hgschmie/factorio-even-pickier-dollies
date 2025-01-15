@@ -13,6 +13,13 @@ data:extend {
         order = 'aa',
     },
     {
+        name = "dolly-clear-entity",
+        setting_type = "runtime-per-user",
+        type = "bool-setting",
+        default_value = false,
+        order = 'ab',
+    },
+    {
         name = "dolly-ignore-collisions",
         setting_type = "runtime-per-user",
         type = "bool-setting",
