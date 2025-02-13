@@ -13,7 +13,7 @@
   "description": "Move and rotate most placed entities.",
   "package": {
     "git_publish_branch": "main",
-    "readme": ".portal/README.md",
+    "readme": "README.md",
     "sync_portal_details": true
   }
 }
