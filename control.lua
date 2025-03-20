@@ -303,6 +303,15 @@ function epd.selected_entity_changed(event)
     tools.save_entity(pdata, nil, event.tick)
 end
 
+function epd.cursor_stack_changed(event)
+    ---@type LuaPlayer?
+    local player = game.get_player(event.player_index)
+    if not (player and player.selected) then return end
+
+    local pdata = tools.pdata(event.player_index)
+    tools.save_entity(pdata, nil, event.tick)
+end
+
 function epd.on_configuration_changed()
     -- Make sure the blacklists exist.
     storage.blacklist_names = storage.blacklist_names or util.copy(const.blacklist_names)
@@ -337,6 +346,8 @@ function epd.register_events()
 
     script.on_configuration_changed(epd.on_configuration_changed)
     script.on_event(defines.events.on_selected_entity_changed, epd.selected_entity_changed)
+
+    script.on_event(defines.events.on_player_cursor_stack_changed, epd.cursor_stack_changed)
 end
 
 -- event registration
