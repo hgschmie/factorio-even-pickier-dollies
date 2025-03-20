@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.5.3
-Date: ????
+Date: 2025-03-20
   Bugfixes:
     - When rotating an entity and then picking up a blueprint from the blueprint library and rotating it, the entity kept rotating. Reported by @Nightmare_Sky on the forums.
 ---------------------------------------------------------------------------------------------------
