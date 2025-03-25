@@ -306,7 +306,7 @@ end
 function epd.cursor_stack_changed(event)
     ---@type LuaPlayer?
     local player = game.get_player(event.player_index)
-    if not (player and player.selected) then return end
+    if not player then return end
 
     local pdata = tools.pdata(event.player_index)
     tools.save_entity(pdata, nil, event.tick)
