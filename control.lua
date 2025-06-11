@@ -36,6 +36,11 @@ function epd:move_entity(move_event)
         return tools.flying_text(player, { "cant-reach" }, entity.position)
     end
 
+    -- ghost moving must be explicitly allowed
+    if entity.type == 'entity-ghost' and not (cheat_mode or epd.settings.get_ghost_move()) then
+        return tools.flying_text(player, { "picker-dollies.cant-be-teleported", entity.ghost_localised_name }, entity.position)
+    end
+
     -- Check if entity is blacklisted, cheat_mode allows moving more entities.
     if not tools.allow_moving(entity, cheat_mode) then
         return tools.flying_text(player, { "picker-dollies.cant-be-teleported", entity.localised_name }, entity.position)
@@ -245,6 +250,9 @@ function epd.rotate_oblong_entity(event, reverse)
     if not entity then return end
 
     local distance = storage.oblong_names[entity.name]
+
+    -- ghost moving must be explicitly allowed
+    if entity.type == 'entity-ghost' and not epd.settings.get_ghost_move() then return end
 
     if not (distance and tools.allow_moving(entity, player.cheat_mode)) then return end
     if not (player.cheat_mode or player.can_reach_entity(entity)) then return end

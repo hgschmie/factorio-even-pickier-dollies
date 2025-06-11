@@ -40,10 +40,17 @@ data:extend {
         order = 'ba',
     },
     {
+        name = "dolly-ghost-move",
+        setting_type = 'startup',
+        type = "bool-setting",
+        default_value = true,
+        order = 'ca',
+    },
+    {
         name = "dolly-transporter-mode",
         setting_type = 'startup',
         type = "bool-setting",
         default_value = false,
-        order = 'ca',
+        order = 'cb',
     },
 }

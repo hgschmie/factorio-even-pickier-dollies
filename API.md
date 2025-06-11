@@ -1,6 +1,6 @@
 # API Documentation
 
-Even Pickier Dollies (EPD) implements the same API as the original PickerDollies mod. Any mod that works with PickerDollies in Factorio 1.1 should work the same way with EPD in Factorio 2.0
+Even Pickier Dollies (EPD) implements the same API as the original PickerDollies mod. Any mod that works with PickerDollies in Factorio 1.1 should work the same way with EPD in Factorio 2.0.
 
 ## API calls
 
@@ -46,7 +46,7 @@ script.on_load(init_epd_event)
 
 The `EventData` fields `tick` and `name` (which contains the event id returned by `dolly_moved_entity_id`) are filled after EPD version 2.5.0. If a mod depends on these fields being present, add a dependency to your mod info.json file to require at least this version.
 
-#### dolly_moved_entity_id(): defines.events
+#### `dolly_moved_entity_id(): defines.events`
 
 Returns the event id which EPD will use to send an event to another mod. The return value is actually whatever `LuaBootstrap#generated_event_name` returns but the weirdness of the Lua API makes this a `defines.events` type. 
 
@@ -68,7 +68,7 @@ Starting with EPD 2.5.0, 'transporter mode' can move entities that can not be te
 
 Some mods want to exclude their entities (or hidden entities) from being moved by EPD. They can register with the mod using the blacklist API.
 
-#### add_blacklist_name(entity_name: string)
+#### `add_blacklist_name(entity_name: string)`
 
 Adds an entity to the blacklist. The entity must be defined in `prototypes.entity`.
 
@@ -81,11 +81,11 @@ remote.call('PickerDollies', 'add_blacklist_name', 'my_immovable_entity')
 
 registers an entity called `my_immovable_entity`. This entity will not be moved by EPD.
 
-#### remove_blacklist_name(entity_name: string)
+#### `remove_blacklist_name(entity_name: string)`
 
 Removes an entry from the blacklist. Calling this method with an entity name that has not been blacklisted has no effect.
 
-#### get_blacklist_names(): table<string, true>
+#### `get_blacklist_names(): table<string, true>`
 
 Returns a table where the keys are the blacklisted entities. The value is always `true`.
 
@@ -99,14 +99,14 @@ For a 1x2 entity, the midpoint is at `{ 1, 0.5 }` and moves to `{ 0.5, 1 }` when
 
 For a 2x4 entity, the midpoint is at `{ 2, 1 }` and moves to `{ 1, 2 }` when rotated. The midpoint moves by 1 tile in x and y direction. So the distance is 1.
 
-### add_oblong_name(entity_name: string, distance: number?)
+#### `add_oblong_name(entity_name: string, distance: number?)`
 
 Adds an entity for oblong rotation. If the `distance` parameter is omitted, it is assumed to be 0.5 (which is compatible to PickerDollies). The entity must be defined in `prototypes.entity`.
 
-### remove_oblong_name(entity_name: string)
+#### `remove_oblong_name(entity_name: string)`
 
 Removes an entity from the oblong rotation list. Calling this method with an entity name that has not been registered has no effect.
 
-### get_oblong_names(): table<string, number>
+#### `get_oblong_names(): table<string, number>`
 
 Returns a table where the keys are the entity names registered for oblong rotation. The value is the distance value (This is different from PickerDollies, where the value is always the `true` constant).

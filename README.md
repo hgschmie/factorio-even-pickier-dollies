@@ -4,7 +4,7 @@ This is a rewrite of the [Picker Dollies](https://github.com/Nexela/PickerDollie
 
 Hover over entities and use the keybindings to move entities around. Entities will keep their wire connections and settings. This allows you to build your set up spaced out and when you are finished push it all together for a nice tight build. Some entities can't be shoved around. Also respects max wire distance.
 
-*Note:* Moving some entities from mods can cause issues or strange visual artifacts. If you move a _modded_ entity around and things behave weird (e.g. a piece of the entity is "left behind" or some effect remains at the original position), it is almost always because the mod uses some "hidden" additional entities. EPD knows nothing about those entities _and there is nothing that can be done in EPD!_ EPD exposes an [API](https://github.com/hgschmie/factorio-even-pickier-dollies/blob/main/API.md) with can be used to receive events whenever an entity is moved and a mod author could use those to move these additional entities as well. Please raise an issue with the author of the mod, not with EPD.
+*Note:* Moving some entities from mods can cause issues or strange visual artifacts. If you move a *modded* entity around and things behave weird (e.g. a piece of the entity is "left behind" or some effect remains at the original position), it is almost always because the mod uses some "hidden" additional entities. EPD knows nothing about those entities *and there is nothing that can be done in EPD!* EPD exposes an [API](https://github.com/hgschmie/factorio-even-pickier-dollies/blob/main/API.md) with can be used to receive events whenever an entity is moved and a mod author could use those to move these additional entities as well. Please raise an issue with the author of the mod, not with EPD.
 
 EPD retains the `PickerDollies` API name to be compatible with all the other things out there that interface with it.
 
@@ -32,6 +32,9 @@ Entities are no longer teleported into "safe positions" first. This makes a lot 
 
 EPD now offers a "transporter mode" that can be enabled in the startup settings. It allows certain entities (currently only belts and 1x1 loaders) to be moved even though these entities can not be teleported. This is done by creating a clone of the entity at the new position and destroying the original entity. This may cause problems in some scenarios or with some mods, so when in doubt, leave the startup setting off.
 
+### Release 2.6.0 and higher
+
+EPD can now move ghost entities around (they are still limited as regular entities as they can not overlap) if enabled through a new startup setting. Default is allowing to move ghosts around.
 
 ## Legal
 
