@@ -47,10 +47,17 @@ data:extend {
         order = 'ca',
     },
     {
-        name = "dolly-transporter-mode",
+        name = "dolly-item-destroy",
         setting_type = 'startup',
         type = "bool-setting",
         default_value = false,
         order = 'cb',
+    },
+    {
+        name = "dolly-transporter-mode",
+        setting_type = 'startup',
+        type = "bool-setting",
+        default_value = false,
+        order = 'cc',
     },
 }

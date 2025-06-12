@@ -40,6 +40,11 @@ function mod_settings.get_ghost_move()
     return settings.startup['dolly-ghost-move'].value or false --[[@as boolean]]
 end
 
+---@return boolean
+function mod_settings.get_item_destroy()
+    return settings.startup['dolly-item-destroy'].value or false --[[@as boolean]]
+end
+
 ---@param player LuaPlayer
 ---@return boolean
 function mod_settings.get_clear_entity(player)

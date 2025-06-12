@@ -1,7 +1,10 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.6.1
-Date: ????
+Date: 2025-06-12
   Changes:
+    - Ghosts do not collide with items.
+    - Entities "hoover" up items. If the inventory is full, do not move the items around.
+    - Add new setting to allow destruction of items on the ground if the inventory is full.
 ---------------------------------------------------------------------------------------------------
 Version: 2.6.0
 Date: 2025-06-11

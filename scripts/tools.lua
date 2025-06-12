@@ -216,20 +216,6 @@ function tools.has_collision(entity, target_box, ignore_collisions)
     return false
 end
 
----@param player LuaPlayer
----@param target_box BoundingBox
-function tools.mine_ground_items(player, target_box)
-    -- Mine or move out of the way any items on the ground.
-    local items_on_ground = player.surface.find_entities_filtered { type = "item-entity", area = target_box }
-    for _, item_entity in pairs(items_on_ground) do
-        if item_entity.valid and not player.mine_entity(item_entity) then
-            local item_pos = item_entity.position
-            local valid_pos = player.surface.find_non_colliding_position(item_entity, item_pos, 50, .20) or item_pos
-            item_entity.teleport(valid_pos)
-        end
-    end
-end
-
 -- ----------------------
 -- stdlib stuff
 -- ----------------------

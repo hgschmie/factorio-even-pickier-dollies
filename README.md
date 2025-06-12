@@ -36,6 +36,10 @@ EPD now offers a "transporter mode" that can be enabled in the startup settings.
 
 EPD can now move ghost entities around (they are still limited as regular entities as they can not overlap) if enabled through a new startup setting. Default is allowing to move ghosts around.
 
+Ghosts do not collide with items on the ground (useful for Space platforms).
+
+EPD can destroy items on the ground if the inventory (or space platform hub) are full and an entity is moved on top of items on the ground. This is controlled by a startup setting.
+
 ## Legal
 
 Copyright (C) 2024-2025 Henning Schmiedehausen (@hgschmie), licensed under the MIT License.

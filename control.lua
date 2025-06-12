@@ -30,6 +30,7 @@ function epd:move_entity(move_event)
     local entity = move_event.entity
 
     local debug = self.settings.get_debug(player)
+    local item_destroy = self.settings.get_item_destroy()
 
     -- Check non cheat_mode player in range.
     if not (cheat_mode or player.can_reach_entity(entity)) then
@@ -109,7 +110,7 @@ function epd:move_entity(move_event)
     if direction then
         local distance = move_event.distance * entity.prototype.building_grid_bit_shift -- Distance to move the source, defaults to 1
         target_pos = tools.position_translate(start_pos, direction, distance)           -- Where we want to go too
-        target_box = tools.area_translate(entity.bounding_box, direction, distance)     -- Target selection box location
+        target_box = tools.area_translate(target_box, direction, distance)              -- Target collision box location
     end
 
     -- update the saved entity for multiple moves.
@@ -171,7 +172,15 @@ function epd:move_entity(move_event)
 
     if tools.has_collision(target_entity, target_box, ignore_collisions) then return undo_move('picker-dollies.no-room') end
 
-    tools.mine_ground_items(player, target_box)
+    if entity.type ~= 'entity-ghost' then
+        -- Mine or destroy of the way any items on the ground.
+        local items_on_ground = player.surface.find_entities_filtered { type = "item-entity", area = target_box }
+        for _, item_entity in pairs(items_on_ground) do
+            if not player.mine_entity(item_entity) and item_destroy then
+                item_entity.destroy { }
+            end
+        end
+    end
 
     if entity_has_moved then
         -- all additional placement checks (e.g. on water) are done with this last teleport
