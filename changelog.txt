@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.6.2
-Date: ????
+Date: 2025-06-23
   Bugfixes:
     - fix crash when player cursor stack is not available (e.g. because the player is dead). Reported by @JigSaW_3 on the forums.
 ---------------------------------------------------------------------------------------------------
