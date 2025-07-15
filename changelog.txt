@@ -1,7 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.6.3
 Date: ????
-  Changes:
+  Bugfixes:
+    - Fix that some mods that use internal wiring but expose max wire distance of 0 could not be moved.
 ---------------------------------------------------------------------------------------------------
 Version: 2.6.2
 Date: 2025-06-23

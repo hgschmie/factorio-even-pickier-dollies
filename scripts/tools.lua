@@ -183,7 +183,7 @@ function tools.can_wires_reach(entity, target_entity)
     for _, wire_connector in pairs(wire_connectors) do
         local target_wire_connector = target_entity.get_wire_connector(wire_connector.wire_connector_id, true)
         for _, connection in pairs(wire_connector.connections) do
-            if not connection.target.can_wire_reach(target_wire_connector) then return false end
+            if entity.prototype.get_max_circuit_wire_distance(entity.quality) > 0 and not connection.target.can_wire_reach(target_wire_connector) then return false end
         end
     end
     return true
