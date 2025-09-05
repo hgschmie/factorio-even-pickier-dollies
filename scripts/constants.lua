@@ -12,6 +12,8 @@ local function array_to_dict(t)
 end
 
 return {
+    array_to_dict = array_to_dict,
+
     api_name = 'PickerDollies',
 
     -- extension area in which to repair connections for loaders, beacons, cliffs and mining drills.

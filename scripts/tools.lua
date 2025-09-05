@@ -6,8 +6,13 @@ local const = require('scripts.constants')
 
 local collision_mask_util = require('collision-mask-util')
 
+---@type epd.ModData
+local mod_data = assert(prototypes.mod_data['even-pickier-dollies']).data
+
 ---@class EvenPickierDolliesTools
-local tools = {}
+local tools = {
+    mod_data_blacklist = mod_data.blacklist_names or {}
+}
 
 ---@param player LuaPlayer
 ---@param position MapPosition
@@ -21,8 +26,8 @@ end
 ---@param cheat_mode boolean
 ---@return boolean
 function tools.allow_moving(entity, cheat_mode)
-    -- definitely blacklisted by either internal list or mod registration
-    local blacklisted = const.blacklist_types[entity.type] or storage.blacklist_names[entity.name]
+    -- definitely blacklisted by either internal list, mod registration or in the mod-data object
+    local blacklisted = const.blacklist_types[entity.type] or storage.blacklist_names[entity.name] or tools.mod_data_blacklist[entity.name] or false
     if blacklisted then return false end
 
     -- if it is not in the cheat whitelist, allow moving

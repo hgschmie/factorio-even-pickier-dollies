@@ -1,7 +1,8 @@
 ---------------------------------------------------------------------------------------------------
-Version: 2.6.4
+Version: 2.7.0
 Date: ????
-  Changes:
+  Features:
+    - Support entity blacklisting through mod-data in the prototype phase (suggested by @LoupAndSnoop in #9)
 ---------------------------------------------------------------------------------------------------
 Version: 2.6.3
 Date: 2025-07-15

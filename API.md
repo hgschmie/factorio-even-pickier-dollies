@@ -48,7 +48,7 @@ The `EventData` fields `tick` and `name` (which contains the event id returned b
 
 #### `dolly_moved_entity_id(): defines.events`
 
-Returns the event id which EPD will use to send an event to another mod. The return value is actually whatever `LuaBootstrap#generated_event_name` returns but the weirdness of the Lua API makes this a `defines.events` type. 
+Returns the event id which EPD will use to send an event to another mod. The return value is actually whatever `LuaBootstrap#generated_event_name` returns but the weirdness of the Lua API makes this a `defines.events` type.
 
 Use this value to register a callback with `script.on_event`. The callback receives an event with the following attributes:
 
@@ -110,3 +110,14 @@ Removes an entity from the oblong rotation list. Calling this method with an ent
 #### `get_oblong_names(): table<string, number>`
 
 Returns a table where the keys are the entity names registered for oblong rotation. The value is the distance value (This is different from PickerDollies, where the value is always the `true` constant).
+
+## Using mod-data to register blacklisting (since 2.7.0)
+
+Factorio 2.0.58 introduced a way to create mod specific custom data objects. EPD supports registering blacklisted entities directly (in the prototype phase) without any API calls. It is recommended to register entities either in `data-updates.lua` or `data-final-fixes.lua` as the order in which mods are loaded is undefined and EPD registers its custom object in the initial `data.lua` phase.
+
+```lua
+local epd_mod_data = assert(data.raw['mod-data']['even-pickier-dollies']).data
+if epd_mod_data then
+     epd_mod_data.blacklist_names['blacklisted-entity'] = true
+end
+```
