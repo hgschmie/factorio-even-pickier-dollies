@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.7.0
-Date: ????
+Date: 2025-09-05
   Features:
     - Support entity blacklisting through mod-data in the prototype phase (suggested by @LoupAndSnoop in #9)
     - Do not allow entity moving when remote viewing. The old behavior can be restored with a startup setting (suggested by @UltraJohn on the forum)
