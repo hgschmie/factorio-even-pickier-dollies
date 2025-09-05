@@ -45,7 +45,7 @@ return {
     },
 
     -- Default entity names to blacklist from moving. Stored in global and can be modified by the user via interface.
-    blacklist_names = array_to_dict { 'pumpjack' },
+    blacklist_names = array_to_dict { 'pumpjack', 'captive-biter-spawner', },
 
     -- Entities where "transporter mode" is supported.
 
