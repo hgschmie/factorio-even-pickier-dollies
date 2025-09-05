@@ -32,9 +32,16 @@ function epd:move_entity(move_event)
     local debug = self.settings.get_debug(player)
     local item_destroy = self.settings.get_item_destroy()
 
-    -- Check non cheat_mode player in range.
-    if not (cheat_mode or player.can_reach_entity(entity)) then
-        return tools.flying_text(player, { "cant-reach" }, entity.position)
+    if not cheat_mode then
+        -- check remote view mode
+        if not self.settings.get_remote_move() and (player.controller_type == defines.controllers.remote) then
+            return tools.flying_text(player, { "picker-dollies.cant-remote-move", entity.localised_name }, entity.position)
+        end
+
+        -- Check player in range.
+        if not player.can_reach_entity(entity) then
+            return tools.flying_text(player, { "cant-reach" }, entity.position)
+        end
     end
 
     -- ghost moving must be explicitly allowed
@@ -177,7 +184,7 @@ function epd:move_entity(move_event)
         local items_on_ground = player.surface.find_entities_filtered { type = "item-entity", area = target_box }
         for _, item_entity in pairs(items_on_ground) do
             if not player.mine_entity(item_entity) and item_destroy then
-                item_entity.destroy { }
+                item_entity.destroy {}
             end
         end
     end

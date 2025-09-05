@@ -36,6 +36,11 @@ function mod_settings.get_transporter_mode()
 end
 
 ---@return boolean
+function mod_settings.get_remote_move()
+    return settings.startup['dolly-remote-move'].value or false --[[@as boolean]]
+end
+
+---@return boolean
 function mod_settings.get_ghost_move()
     return settings.startup['dolly-ghost-move'].value or false --[[@as boolean]]
 end

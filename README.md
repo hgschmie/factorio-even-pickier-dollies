@@ -40,6 +40,10 @@ Ghosts do not collide with items on the ground (useful for Space platforms).
 
 EPD can destroy items on the ground if the inventory (or space platform hub) are full and an entity is moved on top of items on the ground. This is controlled by a startup setting.
 
+### Release 2.7.0 and higher
+
+EPD restricts moving of entities to direct player interactions. Entities can no longer be moved in the remote view. There is a startup setting to restore that behavior and cheat mode will bypass this restriction.
+
 ## Legal
 
 Copyright (C) 2024-2025 Henning Schmiedehausen (@hgschmie), licensed under the MIT License.
