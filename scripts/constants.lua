@@ -22,26 +22,27 @@ return {
     -- Entity types that can not be moved even in cheat_mode.
     blacklist_types = array_to_dict {
         -- rails and train stuff
-        'straight-rail', 'half-diagonal-rail', 'curved-rail-a', 'curved-rail-b', 'legacy-straight-rail', 'legacy-curved-rail',
-        'elevated-curved-rail-a', 'elevated-curved-rail-b', 'elevated-half-diagonal-rail', 'elevated-straight-rail',
-        'rail-ramp', 'rail-support', 'train-stop', 'rail-signal', 'rail-chain-signal', 'rail-remnants',
-        'locomotive', 'cargo-wagon', 'artillery-wagon', 'fluid-wagon',
+        'artillery-wagon', 'cargo-wagon', 'curved-rail-a', 'curved-rail-b', 'elevated-curved-rail-a', 'elevated-curved-rail-b', 'elevated-half-diagonal-rail',
+        'elevated-straight-rail', 'fluid-wagon', 'half-diagonal-rail', 'legacy-curved-rail', 'legacy-straight-rail', 'locomotive', 'rail-chain-signal',
+        'rail-ramp', 'rail-signal', 'rail-support', 'straight-rail', 'train-stop',
         -- robots
-        'construction-robot', 'logistic-robot', 'combat-robot',
+        'capture-robot', 'combat-robot', 'construction-robot', 'logistic-robot',
         -- rockets and space stuff
-        'rocket-silo-rocket', 'rocket-silo-rocket-shadow', 'cargo-landing-pad', 'cargo-pod',
+        'asteroid', 'cargo-bay', 'cargo-landing-pad', 'cargo-pod', 'rocket-silo-rocket', 'rocket-silo-rocket-shadow', 'space-platform-hub', 'thruster',
         -- belts and containers
-        'linked-belt', 'underground-belt', 'temporary-container',
+        'linked-belt', 'temporary-container', 'underground-belt',
         -- environment
-        'cliff', 'tree', 'resource', 'explosion', 'particle-source', 'fire', 'sticker', 'stream', 'beam', 'artillery-flare', 'projectile',
+        'artillery-flare', 'beam', 'cliff', 'explosion', 'fire', 'fish', 'lightning', 'particle-source', 'plant', 'projectile', 'resource', 'sticker', 'stream', 'tree',
         -- internal stuff
-        'item-request-proxy', 'tile-ghost', 'item-entity', 'deconstructible-tile-proxy', 'arrow', 'highlight-box', 'speech-bubble', 'smoke-with-trigger',
+        'arrow', 'deconstructible-tile-proxy', 'highlight-box', 'item-entity', 'item-request-proxy', 'smoke-with-trigger', 'speech-bubble', 'sticker', 'tile-ghost',
         -- misc
         'spider-leg',
     },
 
     -- Entity types that can only be moved in cheat_mode.
-    whitelist_cheat_types = array_to_dict { 'character', 'unit', 'unit-spawner', 'car', 'spider-vehicle', 'simple-entity', 'corpse', 'character-corpse' },
+    whitelist_cheat_types = array_to_dict {
+        'car', 'character','character-corpse', 'corpse', 'segment', 'segmented-unit', 'simple-entity', 'spider-vehicle', 'unit', 'unit-spawner',
+    },
 
     -- Default entity names to blacklist from moving. Stored in global and can be modified by the user via interface.
     blacklist_names = array_to_dict { 'pumpjack' },
