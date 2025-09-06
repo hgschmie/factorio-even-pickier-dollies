@@ -2,6 +2,8 @@
 -- constants
 --
 
+local settings = require('scripts.settings')
+
 ---@generic K
 ---@param t {[uint]: K}
 ---@return {[K]: true}
@@ -11,7 +13,7 @@ local function array_to_dict(t)
     return t2
 end
 
-return {
+local const = {
     array_to_dict = array_to_dict,
 
     api_name = 'PickerDollies',
@@ -41,11 +43,11 @@ return {
 
     -- Entity types that can only be moved in cheat_mode.
     whitelist_cheat_types = array_to_dict {
-        'car', 'character','character-corpse', 'corpse', 'segment', 'segmented-unit', 'simple-entity', 'spider-vehicle', 'unit', 'unit-spawner',
+        'car', 'character', 'character-corpse', 'corpse', 'simple-entity', 'spider-vehicle',
     },
 
     -- Default entity names to blacklist from moving. Stored in global and can be modified by the user via interface.
-    blacklist_names = array_to_dict { 'pumpjack', 'captive-biter-spawner', },
+    blacklist_names = array_to_dict { 'pumpjack', },
 
     -- Entities where "transporter mode" is supported.
 
@@ -91,3 +93,12 @@ return {
         'lane-splitter', 'linked-belt', 'loader', 'loader-1x1', 'splitter', 'transport-belt', 'underground-belt',
     },
 }
+
+if not settings.get_biter_move() then
+    const.blacklist_names['captive-biter-spawner'] = true
+    for _, type in pairs { 'segment', 'segmented-unit', 'unit', 'unit-spawner', } do
+        const.whitelist_cheat_types[type] = true
+    end
+end
+
+return const

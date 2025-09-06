@@ -338,7 +338,7 @@ end
 
 function epd.on_configuration_changed()
     -- Make sure the blacklists exist.
-    storage.blacklist_names = storage.blacklist_names or util.copy(const.blacklist_names)
+    storage.blacklist_names = storage.blacklist_names or {}
     storage.oblong_names = storage.oblong_names or {}
 
     for name, distance in pairs(const.oblong_names) do
@@ -349,6 +349,10 @@ function epd.on_configuration_changed()
         if type(storage.oblong_names[name]) ~= 'number' then
             storage.oblong_names[name] = 0.5 -- default offset for a 2x1 oblong entity
         end
+    end
+
+    for name in pairs(const.blacklist_names) do
+        storage.blacklist_names[name] = true
     end
 
     -- Remove any invalid prototypes from the blacklists.

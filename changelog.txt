@@ -2,6 +2,7 @@
 Version: 2.7.1
 Date: ????
   Changes:
+    - Add a startup setting to control whether biters and biter related entities can be moved. This also affects the captive-biter-spawners (Semi-requested by @DarkHelmet on the forum)
 ---------------------------------------------------------------------------------------------------
 Version: 2.7.0
 Date: 2025-09-05

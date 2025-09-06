@@ -54,17 +54,24 @@ data:extend {
         order = 'cb',
     },
     {
-        name = "dolly-item-destroy",
+        name = "dolly-biter-move",
         setting_type = 'startup',
         type = "bool-setting",
         default_value = false,
         order = 'cc',
     },
     {
-        name = "dolly-transporter-mode",
+        name = "dolly-item-destroy",
         setting_type = 'startup',
         type = "bool-setting",
         default_value = false,
         order = 'cd',
+    },
+    {
+        name = "dolly-transporter-mode",
+        setting_type = 'startup',
+        type = "bool-setting",
+        default_value = false,
+        order = 'ce',
     },
 }
