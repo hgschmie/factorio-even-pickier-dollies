@@ -177,18 +177,27 @@ end
 --- - for each connection, find the target connector (on the other side) and see if it can reach "back" to the target entity connector
 ---
 --- This allow checking whether wires that connect e.g. to a belt will connect to a new belt if that was moved (iaw deleted and re-created).
----@param entity LuaEntity with all wire connections to check
----@param target_entity LuaEntity? Entity that should be reached
----@return boolean
-function tools.can_wires_reach(entity, target_entity)
+---@param entity LuaEntity This entity holds the current wires to check
+---@param new_entity LuaEntity? The new entity that will be checked. This can be the same entity (for a normal move) or a new entity (for teleport mode)
+---@return boolean can_move If true, the entity can be moved. If false, show the "wires can not be stretched any further" error
+function tools.can_wires_reach(entity, new_entity)
     local wire_connectors = entity.get_wire_connectors(false) or {}
     if table_size(wire_connectors) == 0 then return true end
 
-    local target_entity = target_entity or entity
+    new_entity = new_entity or entity
     for _, wire_connector in pairs(wire_connectors) do
-        local target_wire_connector = target_entity.get_wire_connector(wire_connector.wire_connector_id, true)
+        local new_wire_connector = new_entity.get_wire_connector(wire_connector.wire_connector_id, true)
         for _, connection in pairs(wire_connector.connections) do
-            if entity.prototype.get_max_circuit_wire_distance(entity.quality) > 0 and not connection.target.can_wire_reach(target_wire_connector) then return false end
+            local target_wire_connector = connection.target
+            if entity.prototype.get_max_circuit_wire_distance(entity.quality) > 0 and not
+                -- if wires can connect directly, continue
+                (target_wire_connector.can_wire_reach(new_wire_connector)
+                    -- if the wire was made by a mod (or a radar), continue
+                    or (connection.origin ~= defines.wire_origin.player)
+                    -- finally, if the wire connects two entities on different surfaces (e.g. compact circuit connection points), continue
+                    or (new_entity.surface_index ~= target_wire_connector.owner.surface_index)) then
+                return false
+            end
         end
     end
     return true

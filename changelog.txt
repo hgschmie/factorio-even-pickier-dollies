@@ -3,6 +3,8 @@ Version: 2.7.2
 Date: ????
   Changes:
     - Add polish translation (contributed by @GPDiwka on github, thank you!)
+  Bugfixes:
+    - allow moving entities that have "magic" wire connections (created by scripts or to a different surface). This fixes moving the connection poles within compact circuits.
 ---------------------------------------------------------------------------------------------------
 Version: 2.7.1
 Date: 2025-09-06
