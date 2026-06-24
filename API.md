@@ -1,6 +1,6 @@
 # API Documentation
 
-Even Pickier Dollies (EPD) implements the same API as the original PickerDollies mod. Any mod that works with PickerDollies in Factorio 1.1 should work the same way with EPD in Factorio 2.0.
+Even Pickier Dollies (EPD) implements the same API as the original PickerDollies mod. Any mod that works with PickerDollies in Factorio 1.1 should work the same way with EPD in Factorio 2.1.
 
 ## API calls
 
