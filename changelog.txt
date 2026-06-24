@@ -2,7 +2,7 @@
 Version: 3.0.0
 Date: ????
   Changes:
-    - Update to Factorio 2.1. No functional changes; the existing API surface is fully compatible.
+    - Update to Factorio 2.1
 ---------------------------------------------------------------------------------------------------
 Version: 2.7.3
 Date: 2026-04-28
