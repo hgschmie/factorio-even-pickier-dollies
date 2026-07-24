@@ -1,7 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 3.0.2
 Date: ????
-  Changes:
+  Bugfixes:
+    - Fix rotating entities with the regular rotate key (reported by @LividLipid, @Roy192, @MiG53 on the forum)
 ---------------------------------------------------------------------------------------------------
 Version: 3.0.1
 Date: 2026-07-23
@@ -12,6 +13,11 @@ Version: 3.0.0
 Date: 2026-06-23
   Changes:
     - Update to Factorio 2.1
+---------------------------------------------------------------------------------------------------
+Version: 2.7.5
+Date: 2026-07-24
+  Bugfixes:
+    - Fix rotating entities with the regular rotate key (reported by @LividLipid, @Roy192, @MiG53 on the forum)
 ---------------------------------------------------------------------------------------------------
 Version: 2.7.4
 Date: 2026-07-23
