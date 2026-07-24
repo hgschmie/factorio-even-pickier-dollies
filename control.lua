@@ -302,7 +302,7 @@ function epd.rotate_saved_dolly(event, reverse)
     local player = game.get_player(event.player_index)
     if not (player and player.cursor_stack) then return end
 
-    if player.cursor_stack.valid_for_read or player.cursor_ghost then return end
+    if player.cursor_stack.valid_for_read or player.cursor_ghost or player.selected then return end
 
     local pdata = tools.pdata(event.player_index)
 

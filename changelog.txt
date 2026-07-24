@@ -1,7 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 2.7.5
 Date: ????
-  Changes:
+  Bugfixes:
+    - Fix rotating entities with the regular rotate key (reported by @LividLipid, @Roy192, @MiG53 on the forum)
 ---------------------------------------------------------------------------------------------------
 Version: 2.7.4
 Date: 2026-07-23
