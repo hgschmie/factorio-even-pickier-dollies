@@ -1,7 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 3.0.3
 Date: ????
-  Changes:
+  Bugfixes:
+    - Fix crash on Factorio 2.1.21, which renamed LuaEntityPrototype::building_grid_bit_shift to build_grid_size (reported in #12, fixed by @chalkos in #14)
 ---------------------------------------------------------------------------------------------------
 Version: 3.0.2
 Date: 2026-07-24

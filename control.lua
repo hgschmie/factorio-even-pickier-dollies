@@ -6,6 +6,11 @@ local util = require('util')
 local tools = require('scripts.tools')
 local const = require('scripts.constants')
 
+-- Factorio 2.1.21 renamed LuaEntityPrototype::building_grid_bit_shift to build_grid_size.
+-- Both return the grid size (1, or 2 for 2x2-grid entities).
+local grid_size_key = helpers.compare_versions(script.active_mods.base, '2.1.21') >= 0
+    and 'build_grid_size' or 'building_grid_bit_shift'
+
 local event_id = script.generate_event_name()
 
 ---@class EvenPickierDolliesMod
@@ -115,15 +120,7 @@ function epd:move_entity(move_event)
 
     -- process move
     if direction then
-        -- 2.1.21 renamed building_grid_bit_shift to build_grid_size. Same step: 1, or 2 on a 2x2 grid.
-        local prototype = entity.prototype
-        local grid
-        if helpers.compare_versions(script.active_mods.base, "2.1.21") >= 0 then
-            grid = prototype.build_grid_size
-        else
-            grid = prototype.building_grid_bit_shift
-        end
-        local distance = move_event.distance * grid -- Distance to move the source, defaults to 1
+        local distance = move_event.distance * entity.prototype[grid_size_key] -- Distance to move the source, defaults to 1
         target_pos = tools.position_translate(start_pos, direction, distance)           -- Where we want to go too
         target_box = tools.area_translate(target_box, direction, distance)              -- Target collision box location
     end
