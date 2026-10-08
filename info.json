@@ -1,13 +1,13 @@
 {
   "name": "even-pickier-dollies",
-  "version": "3.0.3",
+  "version": "3.1.0",
   "factorio_version": "2.1",
   "title": "Even Pickier Dollies",
   "author": "hgschmie",
   "contact": "https://github.com/hgschmie/factorio-even-pickier-dollies/issues",
   "homepage": "https://github.com/hgschmie/factorio-even-pickier-dollies",
   "dependencies": [
-    "base >= 2.1.7",
+    "base >= 2.1.21",
     "! PickerDollies"
   ],
   "description": "Move and rotate most placed entities.",
