@@ -310,6 +310,7 @@ function epd.rotate_saved_dolly(event, reverse)
     local save_time = epd.settings.get_save_entity(player)
     local entity = tools.get_entity_to_move(player, pdata, event.tick, save_time)
     if not entity or not entity.supports_direction then return end
+    if not (player.cheat_mode or player.can_reach_entity(entity)) then return end
 
     tools.save_entity(pdata, entity, event.tick)
     entity.rotate { reverse = reverse, by_player = player }
