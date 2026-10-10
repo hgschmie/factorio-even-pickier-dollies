@@ -30,12 +30,20 @@ end
 ---@param cheat_mode boolean
 ---@return boolean
 function tools.allow_moving(entity, cheat_mode)
+    -- Ghosts must obey the movement restrictions of the entity they represent.
+    local entity_type, entity_name = entity.type, entity.name
+    if entity_type == 'entity-ghost' then
+        -- Keep explicit registrations that prohibit moving any entity ghost.
+        if storage.blacklist_names[entity_name] or tools.mod_data_blacklist[entity_name] then return false end
+        entity_type, entity_name = entity.ghost_type, entity.ghost_name
+    end
+
     -- definitely blacklisted by either internal list, mod registration or in the mod-data object
-    local blacklisted = const.blacklist_types[entity.type] or storage.blacklist_names[entity.name] or tools.mod_data_blacklist[entity.name] or false
+    local blacklisted = const.blacklist_types[entity_type] or storage.blacklist_names[entity_name] or tools.mod_data_blacklist[entity_name] or false
     if blacklisted then return false end
 
     -- if it is not in the cheat whitelist, allow moving
-    local only_in_cheat = const.whitelist_cheat_types[entity.type]
+    local only_in_cheat = const.whitelist_cheat_types[entity_type]
     if only_in_cheat then return cheat_mode end
 
     -- otherwise, allow moving
