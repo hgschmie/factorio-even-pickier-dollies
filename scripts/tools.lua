@@ -39,7 +39,8 @@ function tools.allow_moving(entity, cheat_mode)
     end
 
     -- definitely blacklisted by either internal list, mod registration or in the mod-data object
-    local blacklisted = const.blacklist_types[entity_type] or storage.blacklist_names[entity_name] or tools.mod_data_blacklist[entity_name] or false
+    local blacklisted = const.blacklist_types[entity_type] or const.setting_blacklist_names[entity_name]
+        or storage.blacklist_names[entity_name] or tools.mod_data_blacklist[entity_name] or false
     if blacklisted then return false end
 
     -- if it is not in the cheat whitelist, allow moving

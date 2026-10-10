@@ -49,6 +49,9 @@ local const = {
     -- Default entity names to blacklist from moving. Stored in global and can be modified by the user via interface.
     blacklist_names = array_to_dict { 'pumpjack', },
 
+    -- Startup-setting restrictions must not persist in the remotely managed blacklist.
+    setting_blacklist_names = {},
+
     -- Entities where "transporter mode" is supported.
 
     --- currently only 1x1 sized types. Underground belt is its own can of worms...
@@ -95,7 +98,7 @@ local const = {
 }
 
 if not settings.get_biter_move() then
-    const.blacklist_names['captive-biter-spawner'] = true
+    const.setting_blacklist_names['captive-biter-spawner'] = true
     for _, type in pairs { 'segment', 'segmented-unit', 'unit', 'unit-spawner', } do
         const.whitelist_cheat_types[type] = true
     end
