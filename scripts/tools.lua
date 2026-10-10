@@ -83,16 +83,17 @@ function tools.clone_entity(entity, position, control)
         end
     end
 
-    -- for belts, copy the items over
+    -- Copy belt contents without clearing the source: placement/wire checks can
+    -- still reject the clone. The source is destroyed only once the move commits.
     if tools.is_belt_type(entity) then
-        -- move items on belt. This should work but does not (https://forums.factorio.com/viewtopic.php?f=25&t=124332)
         for line_index = 1, entity.get_max_transport_line_index() do
             local source = entity.get_transport_line(line_index)
             local dest = result.get_transport_line(line_index)
-            for item_index = 1, #source do
-                dest.insert_at_back(source[item_index])
+            for _, item in ipairs(source.get_detailed_contents()) do
+                -- Force insertion preserves packed items even when the new belt's
+                -- connections change its line lengths (for example, at a corner).
+                dest.force_insert_at(item.position, item.stack, item.stack.count)
             end
-            source.clear()
         end
     end
 
