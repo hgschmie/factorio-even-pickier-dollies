@@ -6,6 +6,7 @@ Date: ????
     - Preserve packed belt items and stack sizes during successful transporter-mode moves.
     - Apply movement blacklists and cheat-only restrictions to the entities represented by ghosts (reported by @adambbutler in #15).
     - Allow captured biter spawners to move after enabling biter movement in existing saves (reported by @adambbutler in #15).
+    - Allow rotating oblong entity ghosts with the rectangle rotation keys (reported by @adambbutler in #15).
 ---------------------------------------------------------------------------------------------------
 Version: 3.1.0
 Date: 2026-10-07

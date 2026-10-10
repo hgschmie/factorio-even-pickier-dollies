@@ -271,7 +271,8 @@ function epd.rotate_oblong_entity(event, reverse)
     local entity = tools.get_entity_to_move(player, pdata, event.tick, save_time)
     if not entity then return end
 
-    local distance = storage.oblong_names[entity.name]
+    local entity_name = entity.type == 'entity-ghost' and entity.ghost_name or entity.name
+    local distance = storage.oblong_names[entity_name]
 
     -- ghost moving must be explicitly allowed
     if entity.type == 'entity-ghost' and not epd.settings.get_ghost_move() then return end
