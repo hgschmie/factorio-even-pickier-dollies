@@ -1,6 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 3.1.1
 Date: ????
+  Changes:
+    - The remote API event ID is now hardcoded to "even-pickier-dollies-on-entity-moved". It is now possible to skip calling this mod's remote interface when setting up on-entity-moved events.
   Bugfixes:
     - Preserve belt contents when a transporter-mode move is rejected (reported by @adambbutler in #15).
     - Preserve packed belt items and stack sizes during successful transporter-mode moves.

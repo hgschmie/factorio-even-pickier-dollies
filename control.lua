@@ -6,7 +6,7 @@ local util = require('util')
 local tools = require('scripts.tools')
 local const = require('scripts.constants')
 
-local event_id = script.generate_event_name()
+local event_id = prototypes.custom_event["even-pickier-dollies-on-entity-moved"]
 
 ---@class EvenPickierDolliesMod
 ---@field event_id defines.events The event id registered with the main game.
