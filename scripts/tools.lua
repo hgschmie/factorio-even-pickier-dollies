@@ -10,8 +10,8 @@ local collision_mask_util = require('collision-mask-util')
 
 local TICKS_PER_SECOND = 60
 
----@type epd.ModData
 local mod_data = assert(prototypes.mod_data['even-pickier-dollies']).data
+---@cast mod_data epd.ModData
 
 ---@class EvenPickierDolliesTools
 local tools = {
@@ -23,7 +23,12 @@ local tools = {
 ---@param silent? boolean
 function tools.flying_text(player, text, position, silent)
     player.create_local_flying_text { text = text, position = position }
-    if not silent then player.play_sound { path = "utility/cannot_build", position = player.position, volume = 1 } end
+    if not silent then player.play_sound {
+            path = "utility/cannot_build",
+            position = player.position,
+            volume_modifier = 1
+        }
+    end
 end
 
 ---@param entity LuaEntity
@@ -87,6 +92,7 @@ function tools.clone_entity(entity, position, control)
     local wire_connectors = entity.get_wire_connectors(false) or {}
     for _, wire_connector in pairs(wire_connectors) do
         local target_wire_connector = result.get_wire_connector(wire_connector.wire_connector_id, true)
+        ---@cast target_wire_connector -?
         for _, connection in pairs(wire_connector.connections) do
             connection.target.connect_to(target_wire_connector, false, connection.origin)
         end
@@ -201,6 +207,7 @@ function tools.can_wires_reach(entity, new_entity)
     new_entity = new_entity or entity
     for _, wire_connector in pairs(wire_connectors) do
         local new_wire_connector = new_entity.get_wire_connector(wire_connector.wire_connector_id, true)
+        ---@cast new_wire_connector -?
         for _, connection in pairs(wire_connector.connections) do
             local target_wire_connector = connection.target
             if entity.prototype.get_max_circuit_wire_distance(entity.quality) > 0 and not
@@ -303,10 +310,10 @@ function tools.position_expand_to_area(pos, radius)
     return { left_top = left_top, right_bottom = right_bottom }
 end
 
----@param area BoundingBox
+---@param area BoundingBox.struct
 ---@param direction defines.direction
 ---@param distance number
----@return BoundingBox
+---@return BoundingBox.struct
 function tools.area_translate(area, direction, distance)
     return {
         left_top = tools.position_translate(area.left_top, direction, distance),
@@ -314,9 +321,9 @@ function tools.area_translate(area, direction, distance)
     }
 end
 
----@param area BoundingBox
+---@param area BoundingBox.struct
 ---@param amount number
----@return BoundingBox
+---@return BoundingBox.struct
 function tools.area_expand(area, amount)
     local offset = { x = amount, y = amount }
     return {
@@ -326,8 +333,8 @@ function tools.area_expand(area, amount)
 end
 
 ---@param pos MapPosition
----@param area BoundingBox
----@return BoundingBox area
+---@param area BoundingBox.struct
+---@return BoundingBox.struct area
 function tools.area_normalize(pos, area)
     return {
         left_top = tools.position_subtract(area.left_top, pos),
@@ -337,8 +344,8 @@ end
 
 ---@param new_pos MapPosition
 ---@param old_pos MapPosition
----@param area BoundingBox
----@return BoundingBox area
+---@param area BoundingBox.struct
+---@return BoundingBox.struct area
 function tools.area_center(new_pos, old_pos, area)
     local normalized = tools.area_normalize(old_pos, area)
     return {

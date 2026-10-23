@@ -7,7 +7,7 @@
 --- prototypes
 ----------------------------------------------------------------------------------------------------
 
----@class epd.ModData
+---@class epd.ModData : table<string, AnyBasic>
 ---@field blacklist_names table<string, boolean>
 
 ----------------------------------------------------------------------------------------------------
@@ -31,7 +31,7 @@
 ---@field start_direction defines.direction
 ---@field start_unit_number integer?
 
----@class EvenPickierDolliesRemoteInterface
+---@class EvenPickierDolliesRemoteInterface: table<string, function>
 ---@field dolly_moved_entity_id fun(): uint
 ---@field add_oblong_name fun(entity_name: string): boolean
 ---@field remove_oblong_name fun(entity_name: string): boolean

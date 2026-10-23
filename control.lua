@@ -20,8 +20,6 @@ local epd = {
 
 remote.add_interface(const.api_name, epd.remote_interface)
 
-assert(remote.interfaces[const.api_name]['dolly_moved_entity_id'])
-
 ---@param move_event EvenPickierDolliesMoveEvent
 function epd:move_entity(move_event)
     local player = move_event.player
@@ -92,7 +90,7 @@ function epd:move_entity(move_event)
     -- undo everything
     local function undo_move(message)
         -- we created a new target entity but it was not viable. Remove it
-        if target_entity and (target_entity.unit_number ~= entity.unit_number) then
+        if target_entity and (target_entity.unit_number ~= start_unit_number) then
             target_entity.destroy()
         end
 
@@ -168,7 +166,7 @@ function epd:move_entity(move_event)
 
     if entity_has_moved then
         -- if the original entity has moved, target_entity is the same as the entity itself
-        assert(entity.unit_number == target_entity.unit_number)
+        assert(start_unit_number == target_entity.unit_number)
         -- move back to start position
         assert(entity.teleport(start_pos), "Could not move back to start position!")
     else
