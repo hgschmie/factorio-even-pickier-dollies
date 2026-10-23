@@ -3,4 +3,4 @@
 --
 
 require('prototypes.hotkeys')
-require('prototypes.mod_data')
+require('prototypes.misc')

@@ -25,20 +25,11 @@
 ----------------------------------------------------------------------------------------------------
 
 ---@class EvenPickierDolliesRemoteInterfaceDollyMovedEvent: EventData
----@field player_index uint
+---@field player_index uint32
 ---@field moved_entity LuaEntity
----@field start_pos MapPosition
+---@field start_pos MapPosition.struct
 ---@field start_direction defines.direction
----@field start_unit_number integer?
-
----@class EvenPickierDolliesRemoteInterface: table<string, function>
----@field dolly_moved_entity_id fun(): uint
----@field add_oblong_name fun(entity_name: string): boolean
----@field remove_oblong_name fun(entity_name: string): boolean
----@field get_oblong_names fun(): {[string]: number}
----@field add_blacklist_name fun(entity_name: string): boolean
----@field remove_blacklist_name fun(entity_name: string): boolean
----@field get_blacklist_names fun(): {[string]: true}
+---@field start_unit_number uint64?
 
 ----------------------------------------------------------------------------------------------------
 --- control.lua

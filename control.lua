@@ -5,20 +5,15 @@
 local util = require('util')
 local tools = require('scripts.tools')
 local const = require('scripts.constants')
+local remote_interface = require('scripts.remote-interface')
 
-local event_id = script.generate_event_name()
 
 ---@class EvenPickierDolliesMod
----@field event_id defines.events The event id registered with the main game.
----@field remote_interface EvenPickierDolliesRemoteInterface
 ---@field settings EvenPickierDolliesSettings
+---@field event_id defines.events
 local epd = {
-    event_id = event_id,
     settings = require('scripts.settings'),
-    remote_interface = require('scripts.remote-interface')(event_id),
 }
-
-remote.add_interface(const.api_name, epd.remote_interface)
 
 ---@param move_event EvenPickierDolliesMoveEvent
 function epd:move_entity(move_event)
@@ -223,7 +218,7 @@ function epd:move_entity(move_event)
         start_direction = start_direction,
         start_unit_number = start_unit_number,
         tick = game.tick,
-        name = event_id,
+        name = self.event_id,
     }
 
     script.raise_event(self.event_id, event_data)
@@ -385,6 +380,8 @@ function epd.register_events()
     script.on_event(defines.events.on_selected_entity_changed, epd.selected_entity_changed)
 
     script.on_event(defines.events.on_player_cursor_stack_changed, epd.cursor_stack_changed)
+
+    epd.event_id = remote_interface.dolly_moved_entity_id()
 end
 
 -- event registration
@@ -399,6 +396,8 @@ end
 function epd.on_load()
     epd.register_events()
 end
+
+remote.add_interface(const.api_name, remote_interface)
 
 script.on_init(epd.on_init)
 script.on_load(epd.on_load)

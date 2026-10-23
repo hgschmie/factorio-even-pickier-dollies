@@ -13,10 +13,13 @@ local function array_to_dict(t)
     return t2
 end
 
+---@class epd.Constants
 local const = {
     array_to_dict = array_to_dict,
 
     api_name = 'PickerDollies',
+
+    event_name = 'even-pickier-dollies-on-entity-moved',
 
     -- extension area in which to repair connections for loaders, beacons, cliffs and mining drills.
     grid_size = 32,

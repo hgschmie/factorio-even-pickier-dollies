@@ -2,13 +2,29 @@
 
 Even Pickier Dollies (EPD) implements the same API as the original PickerDollies mod. Any mod that works with PickerDollies in Factorio 1.1 should work the same way with EPD in Factorio 2.1.
 
+When using EmmyLua for development, this definition can be used to describe the EPD API:
+
+```lua
+---@class (partial) LuaRemote.InterfaceMap
+---@field PickerDollies epd.RemoteInterface
+
+---@class epd.RemoteInterface
+---@field dolly_moved_entity_id fun(): defines.events
+---@field add_oblong_name       fun(name: string, distance: number?): boolean
+---@field remove_oblong_name    fun(name: string): boolean
+---@field get_oblong_names      fun(): table<string, number>
+---@field add_blacklist_name    fun(name: string): boolean
+---@field remove_blacklist_name fun(name: string): boolean
+---@field get_blacklist_names   fun(): table<string, boolean>
+```
+
 ## API calls
 
 The API is available to other mods through the `remote.interfaces` attribute. Use
 
 ```lua
 local function is_picker_dollies_available()
-    return (remote and remote.interfaces['PickerDollies']) or false
+    return (remote and remote.interfaces['PickerDollies']) and true or false
 end
 ```
 
@@ -16,26 +32,29 @@ to test whether the API is available (the EPD mod has been loaded in the game).
 
 ### Event callback
 
-EPD provides a custom event that mods can register and get called when an entity is moved. This event is called for all entities, not just for entities that a mod has registered. It is called for both move and rotate actions.
+EPD provides a custom event called `even-pickier-dollies-on-entity-moved` which is raised when an entity is moved. This event is raised for all entities, not just for entities that a mod has registered. It is called for move and rotate actions.
+
+When registering with EPD, the event can be obtained in multiple ways:
+
+- __[EPD 3.2.0 and newer]__ use the `prototypes` API to retrieve the event id. This is the recommended way of acquiring the event id (see below).
+- __[EPD 3.2.0 and newer]__ use hardcoded `even-pickier-dollies-on-entity-moved` as the event name when registering. This is unlikely to ever change, but if it does, your mod will need to update its code.
+- use the `dolly_moved_entity_id` remote API call to retrieve the event id. This is supported for legacy reasons but should not be used for new mods.
 
 ```lua
-
 ---@class epd.Event: EventData
----@field player_index uint                 Player index
+---@field player_index uint32               Player index
 ---@field moved_entity LuaEntity            The entity that was moved. See 'transporter mode' note below
----@field start_pos MapPosition             The start position from which the entity was moved
+---@field start_pos MapPosition.struct      The start position from which the entity was moved
 ---@field start_direction defines.direction The start direction of the entity (since 2.5.0)
----@field start_unit_number integer?        The original unit number of the entity (since 2.5.0)
+---@field start_unit_number uint64?         The original unit number of the entity (since 2.5.0)
 
 ---@param event epd.Event
 local function on_epd_event(event)
 end
 
 local function init_epd_event()
-    local epd_api = remote.interfaces['PickerDollies']
-    assert(epd_api)
-
-    local epd_event_id = remote.call("PickerDollies", "dolly_moved_entity_id")
+    local epd_api = assert(remote.interfaces['PickerDollies'])
+    local epd_event_id = assert(prototypes.events['even-pickier-dollies-on-entity-moved']).event_id
 
     script.on_event(epd_event_id, on_epd_event)
 end
@@ -44,20 +63,20 @@ script.on_init(init_epd_event)
 script.on_load(init_epd_event)
 ```
 
-The `EventData` fields `tick` and `name` (which contains the event id returned by `dolly_moved_entity_id`) are filled after EPD version 2.5.0. If a mod depends on these fields being present, add a dependency to your mod info.json file to require at least this version.
+The `EventData` fields `tick` and `name` (which contain the event id) are filled after EPD version 2.5.0. If a mod depends on these fields being present, add a dependency to your mod `info.json` file to require at least this version.
 
-#### `dolly_moved_entity_id(): defines.events`
+#### `dolly_moved_entity_id(): defines.events` - _DEPRECATED_
 
-Returns the event id which EPD will use to send an event to another mod. The return value is actually whatever `LuaBootstrap#generated_event_name` returns but the weirdness of the Lua API makes this a `defines.events` type.
+Returns the event id which EPD will use to send an event to another mod. This is also available as `prototypes.events['even-pickier-dollies-on-entity-moved'].event_id` which is the preferred way to retrieve starting with version 3.2.0 (see above).
 
 Use this value to register a callback with `script.on_event`. The callback receives an event with the following attributes:
 
-* `player_index`      - `number`. Index of the player that moved or rotated the entity
+* `player_index`      - `uint32`. Index of the player that moved or rotated the entity
 * `moved_entity`      - `LuaEntity`. The entity that was placed in the target position (see note below!)
-* `start_pos`         - `MapPosition`. The starting position of the entity that was moved or rotated.
-* `start_direction`   - `defines.direction`. The starting direction of the entity that was moved or rotated.
-* `start_unit_number` - `number`. The original unit number of the entity that was moved or rotated.
-* `tick`              - `number`. The game tick of this event (since 2.5.0).
+* `start_pos`         - `MapPosition.struct`. The starting position of the entity that was moved or rotated.
+* `start_direction`   - `defines.direction`. The starting direction of the entity that was moved or rotated  (since 2.5.0).
+* `start_unit_number` - `uint64?`. The original unit number of the entity that was moved or rotated  (since 2.5.0).
+* `tick`              - `MapTick`. The game tick of this event (since 2.5.0).
 * `name`              - `defines.event`. The event id of the event (since 2.5.0).
 
 __[NOTE on 'transporter mode']__
@@ -73,8 +92,7 @@ Some mods want to exclude their entities (or hidden entities) from being moved b
 Adds an entity to the blacklist. The entity must be defined in `prototypes.entity`.
 
 ```lua
-local epd_api = remote.interfaces['PickerDollies']
-assert(epd_api)
+local epd_api = assert(remote.interfaces['PickerDollies'])
 
 remote.call('PickerDollies', 'add_blacklist_name', 'my_immovable_entity')
 ```
@@ -117,7 +135,6 @@ Factorio 2.0.58 introduced a way to create mod specific custom data objects. EPD
 
 ```lua
 local epd_mod_data = assert(data.raw['mod-data']['even-pickier-dollies']).data
-if epd_mod_data then
-     epd_mod_data.blacklist_names['blacklisted-entity'] = true
-end
+
+epd_mod_data.blacklist_names['blacklisted-entity'] = true
 ```
