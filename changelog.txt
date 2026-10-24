@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 3.2.0
-Date: ????
+Date: 2026-10-23
   Changes:
     - implement the move event as a custom event with prototype, allowing retrieval without a
       remote API call. Suggested by @nicolasgower in #17. Thank you!
