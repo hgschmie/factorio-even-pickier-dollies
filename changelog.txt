@@ -1,6 +1,9 @@
 ---------------------------------------------------------------------------------------------------
-Version: 3.1.1
+Version: 3.2.0
 Date: ????
+  Changes:
+    - implement the move event as a custom event with prototype, allowing retrieval without a
+      remote API call. Suggested by @nicolasgower in #17. Thank you!
   Bugfixes:
     - Preserve belt contents when a transporter-mode move is rejected (reported by @adambbutler in #15).
     - Preserve packed belt items and stack sizes during successful transporter-mode moves.
